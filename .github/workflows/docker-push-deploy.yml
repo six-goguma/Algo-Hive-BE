@@ -10,38 +10,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
 
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+      - name: Set up Gradle
+        uses: gradle/wrapper-validation-action@v2
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build with Gradle
+        run: ./gradlew build
 
-    - name: Build and push Docker image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Set up Kubeconfig
-      run: |
-        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-        kubectl config use-context k3s-cluster
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
-    - name: Apply Kubernetes Deployment
-      run: |
-        envsubst < deployment.yaml.template > deployment.yaml
-        kubectl apply -f deployment.yaml
-        kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
+
+      - name: Set up Kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          kubectl config use-context k3s-cluster
+
+      - name: Apply Kubernetes Deployment
+        run: |
+          envsubst < deployment.yaml.template > deployment.yaml
+          kubectl apply -f deployment.yaml
+          kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
