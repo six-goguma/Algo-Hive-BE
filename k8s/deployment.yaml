@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knutoyproject
+  labels:
+    app: knutoyproject
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: knutoyproject
+  template:
+    metadata:
+      labels:
+        app: knutoyproject
+    spec:
+      containers:
+        - name: knutoyproject
+          image: ${DOCKER_USERNAME}/knutoyproject:latest  # GitHub Actions에서 치환
+          ports:
+            - containerPort: 8080
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
