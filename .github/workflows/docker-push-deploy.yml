@@ -75,5 +75,9 @@ jobs:
 
       - name: Delete old Pods after successful rollout
         run: |
-          NEW_POD=$(kubectl get pods -l app=knutoyproject -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' --kubeconfig ~/.kube/config --insecure-skip-tls-verify | head -n 1)
-          kubectl get pods -l app=knutoyproject --kubeconfig ~/.kube/config --insecure-skip-tls-verify -o jsonpath='{.items[?(@.metadata.name!="'"$NEW_POD"'")].metadata.name}' | xargs -I {} kubectl delete pod {} --kubeconfig ~/.kube/config --insecure-skip-tls-verify
+          echo "Fetching the most recently created Pod..."
+          NEW_POD=$(kubectl get pods -l app=knutoyproject --sort-by=.metadata.creationTimestamp --kubeconfig ~/.kube/config --insecure-skip-tls-verify | head -n 1 | awk '{print $1}')
+          echo "New Pod: $NEW_POD"
+          
+          echo "Deleting older Pods..."
+          kubectl get pods -l app=knutoyproject --kubeconfig ~/.kube/config --insecure-skip-tls-verify --sort-by=.metadata.creationTimestamp | tail -n +2 | head -n -1 | awk '{print $1}' | xargs kubectl delete pod --kubeconfig ~/.kube/config --insecure-skip-tls-verify
