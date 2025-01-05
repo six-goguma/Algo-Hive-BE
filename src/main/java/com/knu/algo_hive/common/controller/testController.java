@@ -9,11 +9,11 @@ public class testController {
 
     @GetMapping("/api")
     public ResponseEntity<String> mainPage() {
-        return ResponseEntity.ok().body("test3");
+        return ResponseEntity.ok().body("test4");
     }
 
     @GetMapping("/api/oh")
     public ResponseEntity<String> sidePage() {
-        return ResponseEntity.ok().body("new test4");
+        return ResponseEntity.ok().body("new test5");
     }
 }
