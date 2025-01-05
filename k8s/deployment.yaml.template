@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: knutoyproject
-          image: ${DOCKER_USERNAME}/knutoyproject:latest  # GitHub Actions에서 치환
+          image: ${DOCKER_USERNAME}/knutoyproject:${GITHUB_SHA}  # GitHub Actions에서 치환
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

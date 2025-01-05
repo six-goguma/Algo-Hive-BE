@@ -48,8 +48,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:${GITHUB_SHA} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:${GITHUB_SHA}
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -67,4 +67,4 @@ jobs:
         run: |
           envsubst < ./k8s/deployment.yaml.template > deployment.yaml
           kubectl apply -f deployment.yaml --kubeconfig ~/.kube/config --insecure-skip-tls-verify
-          kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest --kubeconfig ~/.kube/config --insecure-skip-tls-verify
+          kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:${GITHUB_SHA} --kubeconfig ~/.kube/config --insecure-skip-tls-verify
