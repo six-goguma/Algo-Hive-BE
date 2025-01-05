@@ -51,6 +51,10 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
 
+      - name: Create kube directory
+        run: |
+          mkdir -p ~/.kube
+
       - name: Set up kubeconfig
         run: |
           echo "$KUBECONFIG" > ~/.kube/config
