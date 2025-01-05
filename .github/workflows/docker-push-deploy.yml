@@ -54,12 +54,12 @@ jobs:
       - name: Set up kubeconfig
         run: |
           mkdir -p ~/.kube
-          echo "$KUBECONFIG" > ~/.kube/config
+          echo "$KUBE_CONFIG" > ~/.kube/config
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
 
       - name: Apply Kubernetes Deployment
         run: |
           envsubst < ./k8s/deployment.yaml.template > deployment.yaml
-          kubectl apply -f deployment.yaml --kubeconfig ~/.kube/config
-          kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest --kubeconfig ~/.kube/config
+          kubectl apply -f deployment.yaml --kubeconfig ~/.kube/config --insecure-skip-tls-verify
+          kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest --kubeconfig ~/.kube/config --insecure-skip-tls-verify
