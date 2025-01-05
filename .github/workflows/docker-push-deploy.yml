@@ -52,7 +52,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v2
+        uses: azure/setup-kubectl@v3
         with:
           version: 'v1.24.0'
 
