@@ -68,3 +68,12 @@ jobs:
           envsubst < ./k8s/deployment.yaml.template > deployment.yaml
           kubectl apply -f deployment.yaml --kubeconfig ~/.kube/config --insecure-skip-tls-verify
           kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest --kubeconfig ~/.kube/config --insecure-skip-tls-verify
+
+      - name: Wait for rollout to complete
+        run: |
+          kubectl rollout status deployment/knutoyproject --kubeconfig ~/.kube/config --insecure-skip-tls-verify
+
+      - name: Delete old Pods after successful rollout
+        run: |
+          NEW_POD=$(kubectl get pods -l app=knutoyproject -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' --kubeconfig ~/.kube/config --insecure-skip-tls-verify | head -n 1)
+          kubectl get pods -l app=knutoyproject --kubeconfig ~/.kube/config --insecure-skip-tls-verify -o jsonpath='{.items[?(@.metadata.name!="'$NEW_POD'")].metadata.name}' | xargs kubectl delete pod --kubeconfig ~/.kube/config --insecure-skip-tls-verify
