@@ -17,7 +17,9 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'adoptopenjdk'  # JDK 배포판을 지정
+          distribution: 'temurin'
+          java-package: jdk
+          check-latest: false
 
       - name: Set up Gradle
         uses: gradle/wrapper-validation-action@v2
