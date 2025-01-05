@@ -63,6 +63,6 @@ jobs:
 
       - name: Apply Kubernetes Deployment
         run: |
-          envsubst < deployment.yaml.template > deployment.yaml
+          envsubst < ./k8s/deployment.yaml.template > deployment.yaml
           kubectl apply -f deployment.yaml
           kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
