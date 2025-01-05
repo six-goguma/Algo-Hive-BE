@@ -51,12 +51,9 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
 
-      - name: Create kube directory
-        run: |
-          mkdir -p ~/.kube
-
       - name: Set up kubeconfig
         run: |
+          mkdir -p ~/.kube
           echo "$KUBECONFIG" > ~/.kube/config
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
@@ -64,5 +61,5 @@ jobs:
       - name: Apply Kubernetes Deployment
         run: |
           envsubst < ./k8s/deployment.yaml.template > deployment.yaml
-          kubectl apply -f deployment.yaml
+          kubectl apply -f deployment.yaml --validate=false
           kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
