@@ -51,11 +51,15 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
 
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v2
+        with:
+          version: 'v1.24.0'
+
       - name: Set up kubeconfig
         run: |
           mkdir -p ~/.kube
           echo "$KUBECONFIG" > ~/.kube/config
-          kubectl config set-cluster default --server=https://35.193.204.188:6443
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
