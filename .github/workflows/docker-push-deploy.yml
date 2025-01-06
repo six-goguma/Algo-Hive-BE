@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: 🚀 Build and Push Docker Image 🐳
 
 on:
   push:
@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: ☕ Set up Java (Temurin JDK 21)
         uses: actions/setup-java@v3
         with:
           java-version: '21'
@@ -21,18 +21,18 @@ jobs:
           java-package: jdk
           check-latest: false
 
-      - name: Set up Gradle
+      - name: 🛠️ Set up Gradle
         uses: gradle/wrapper-validation-action@v2
 
-      - name: Build with Gradle
+      - name: 🏗️ Build with Gradle
         run: |
           ./gradlew build
           ls -al build/libs
 
-      - name: Set up Docker Buildx
+      - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Cache Docker layers
+      - name: 🔄 Cache Docker layers
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
@@ -40,40 +40,40 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Log in to Docker Hub
+      - name: 🔐 Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: 🐋 Build and push Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest
 
-      - name: Set up kubectl
+      - name: 🛠️ Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: 'v1.24.0'
 
-      - name: Set up kubeconfig
+      - name: 🔑 Set up kubeconfig
         run: |
           mkdir -p ~/.kube
           echo "$KUBECONFIG" > ~/.kube/config
         env:
           KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
-      - name: Apply Kubernetes Deployment
+      - name: 🚀 Apply Kubernetes Deployment
         run: |
           envsubst < ./k8s/deployment.yaml.template > deployment.yaml
           kubectl apply -f deployment.yaml --kubeconfig ~/.kube/config --insecure-skip-tls-verify
           kubectl set image deployment/knutoyproject knutoyproject=${{ secrets.DOCKER_USERNAME }}/knutoyproject:latest --kubeconfig ~/.kube/config --insecure-skip-tls-verify
 
-      - name: Wait for rollout to complete
+      - name: ✅ Wait for rollout to complete
         run: |
           kubectl rollout status deployment/knutoyproject --kubeconfig ~/.kube/config --insecure-skip-tls-verify
 
-      - name: Delete old Pods after successful rollout
+      - name: 🗑️ Delete old Pods after successful rollout
         run: |
           echo "Fetching the most recently created Pod..."
           NEW_POD=$(kubectl get pods -l app=knutoyproject --sort-by=.metadata.creationTimestamp --kubeconfig ~/.kube/config --insecure-skip-tls-verify | head -n 1 | awk '{print $1}')
