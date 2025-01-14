@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: knutoyproject
-          image: ${DOCKER_USERNAME}/knutoyproject:latest  # GitHub Actions에서 치환
+          image: ${DOCKER_USERNAME}/knutoyproject:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -27,6 +27,27 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "1"
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db_host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db_port
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db_password
           readinessProbe:
             httpGet:
               path: /actuator/health
