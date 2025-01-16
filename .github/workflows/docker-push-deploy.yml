@@ -13,6 +13,9 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
+      - name: 📦 Set GEMINI_API_KEY
+        run: echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
+
       - name: ☕ Set up Java (Temurin JDK 21)
         uses: actions/setup-java@v3
         with:
