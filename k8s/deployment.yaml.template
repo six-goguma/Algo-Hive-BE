@@ -48,6 +48,11 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: db_password
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: gemini_api_key
           readinessProbe:
             httpGet:
               path: /actuator/health
