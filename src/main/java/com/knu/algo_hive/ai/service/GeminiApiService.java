@@ -3,6 +3,10 @@ package com.knu.algo_hive.ai.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knu.algo_hive.ai.dto.GeminiApiRequest;
 import com.knu.algo_hive.ai.dto.GeminiApiResponse;
+import com.knu.algo_hive.ai.entity.GeminiRequestEntity;
+import com.knu.algo_hive.ai.entity.GeminiResponseEntity;
+import com.knu.algo_hive.ai.repository.GeminiRequestRepository;
+import com.knu.algo_hive.ai.repository.GeminiResponseRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,15 +24,24 @@ public class GeminiApiService {
             "응답 형식은 velog에 작성할 수 있도록 해당 응답 형식을 따라서 작성해주세요. " +
             "코드: ";
     private final RestTemplate restTemplate;
+    private final GeminiRequestRepository requestRepository;
+    private final GeminiResponseRepository responseRepository;
 
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    public GeminiApiService(RestTemplate restTemplate) {
+    public GeminiApiService(RestTemplate restTemplate,
+                            GeminiRequestRepository requestRepository,
+                            GeminiResponseRepository responseRepository) {
         this.restTemplate = restTemplate;
+        this.requestRepository = requestRepository;
+        this.responseRepository = responseRepository;
     }
 
     public GeminiApiResponse analyzeCode(GeminiApiRequest geminiApiRequest) throws Exception {
+        GeminiRequestEntity geminiRequestEntity = new GeminiRequestEntity(geminiApiRequest.code());
+        requestRepository.save(geminiRequestEntity);
+
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
 
         Map<String, Object> parts = Map.of("text", PROMPT + geminiApiRequest.code());
@@ -44,6 +57,12 @@ public class GeminiApiService {
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
-        return objectMapper.readValue(response.getBody(), GeminiApiResponse.class);
+        GeminiApiResponse geminiApiResponse = objectMapper.readValue(response.getBody(), GeminiApiResponse.class);
+
+        GeminiResponseEntity geminiResponseEntity = new GeminiResponseEntity(geminiApiResponse.getCandidates().getFirst().getContent()
+                .getParts().getFirst().getText(), geminiRequestEntity);
+        responseRepository.save(geminiResponseEntity);
+
+        return geminiApiResponse;
     }
 }
