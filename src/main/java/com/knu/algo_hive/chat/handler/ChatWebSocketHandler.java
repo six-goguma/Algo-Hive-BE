@@ -1,9 +1,11 @@
 package com.knu.algo_hive.chat.handler;
 
 import com.knu.algo_hive.chat.entity.ChatMessage;
+import com.knu.algo_hive.chat.publisher.ChatPublisher;
 import com.knu.algo_hive.chat.repository.ChatMessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -17,14 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
-
     private static final Logger logger = LoggerFactory.getLogger(ChatWebSocketHandler.class);
 
     private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatPublisher chatPublisher;
 
-    public ChatWebSocketHandler(ChatMessageRepository chatMessageRepository) {
+    public ChatWebSocketHandler(ChatMessageRepository chatMessageRepository, @Lazy ChatPublisher chatPublisher) {
         this.chatMessageRepository = chatMessageRepository;
+        this.chatPublisher = chatPublisher;
     }
 
     @Override
@@ -71,7 +74,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ChatMessage chatMessage = new ChatMessage(username, userMessage);
         chatMessageRepository.save(chatMessage);
 
-        broadcastMessage("[" + formattedTime + "] " + username + ": " + userMessage);
+        // Redis에 메시지 발행
+        chatPublisher.publishMessage("[" + formattedTime + "] " + username + ": " + userMessage);
     }
 
     @Override
