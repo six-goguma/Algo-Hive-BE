@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/ai")
+@RequestMapping("/api/v1/ai")
 @Tag(name = "AI", description = "코드 분석 및 블로그 글 작성 AI 관련 API")
 public class GeminiApiController {
 
@@ -23,7 +23,7 @@ public class GeminiApiController {
     }
 
     @Operation(summary = "코드 기반 AI 분석 평가", description = "알고리즘 코드를 입력하면 Gemini AI를 활용하여 분석 결과를 velog 형식으로 리턴합니다.")
-    @PostMapping("/v1/analyze")
+    @PostMapping("/analyze")
     public ResponseEntity<GeminiApiResponse> analyzeCode(@RequestBody GeminiApiRequest geminiApiRequest) throws Exception {
         GeminiApiResponse geminiApiResponse = geminiApiService.analyzeCode(geminiApiRequest);
         return ResponseEntity.ok().body(geminiApiResponse);
