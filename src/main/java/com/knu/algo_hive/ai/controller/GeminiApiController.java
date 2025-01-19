@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/ai")
-@Tag(name = "AI", description = "코드 분석 및 블로그 글 작성 AI 관련 api")
+@Tag(name = "AI", description = "코드 분석 및 블로그 글 작성 AI 관련 API")
 public class GeminiApiController {
 
     private final GeminiApiService geminiApiService;
