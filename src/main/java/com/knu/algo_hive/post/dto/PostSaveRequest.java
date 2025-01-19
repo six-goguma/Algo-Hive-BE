@@ -1,13 +1,11 @@
 package com.knu.algo_hive.post.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record PostSaveRequest(
-        @NotEmpty
-        @NotNull
+        @NotBlank
         String title,
-        @NotEmpty
         @NotNull
         String content,
         @NotNull
