@@ -1,7 +1,7 @@
 package com.knu.algo_hive.post.controller;
 
+import com.knu.algo_hive.post.dto.PostRequest;
 import com.knu.algo_hive.post.dto.PostResponse;
-import com.knu.algo_hive.post.dto.PostSaveRequest;
 import com.knu.algo_hive.post.dto.PostSummaryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,7 +76,7 @@ public class PostController {
     @Operation(summary = "게시물 저장(미구현)",
             description = "게시물 저장"
     )
-    public ResponseEntity<Void> savePost(@RequestBody PostSaveRequest request) {
+    public ResponseEntity<Void> savePost(@RequestBody PostRequest request) {
         return ResponseEntity.ok().build();
     }
 
@@ -84,7 +84,8 @@ public class PostController {
     @Operation(summary = "게시물 수정(미구현)",
             description = "게시물 수정"
     )
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId) {
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId,
+                                           @RequestBody PostRequest request) {
         return ResponseEntity.ok().build();
     }
 
