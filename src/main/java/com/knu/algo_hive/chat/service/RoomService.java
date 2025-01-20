@@ -32,15 +32,15 @@ public class RoomService {
     public List<RoomResponse> getAllRooms() {
         return roomRepository.findAll()
                 .stream().map(
-                Room -> new RoomResponse(
-                        Room.getRoomName()
-                )).collect(Collectors.toList());
+                        Room -> new RoomResponse(
+                                Room.getRoomName()
+                        )).collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteRoom(String roomName) {
         Room room = roomRepository.findByRoomName(roomName)
-                        .orElseThrow(() -> new RuntimeException("roomName에 해당하는 방이 없습니다."));
+                .orElseThrow(() -> new RuntimeException("roomName에 해당하는 방이 없습니다."));
         roomRepository.delete(room);
     }
 }
