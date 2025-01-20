@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageConsumer {
+    private static final String QUEUE_NAME = "myQueue";
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -14,7 +15,7 @@ public class MessageConsumer {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @RabbitListener(queues = "myQueue")
+    @RabbitListener(queues = QUEUE_NAME)
     public void receiveMessage(ChatMessageInfo chatMessageInfo) {
         System.out.println("Received message from RabbitMQ: " + chatMessageInfo);
 

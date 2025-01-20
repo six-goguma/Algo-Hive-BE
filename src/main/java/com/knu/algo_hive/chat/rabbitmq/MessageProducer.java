@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageProducer {
+    private static final String QUEUE_NAME = "myQueue";
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -14,7 +15,7 @@ public class MessageProducer {
     }
 
     public void sendMessage(ChatMessageInfo chatMessageInfo) {
-        rabbitTemplate.convertAndSend("myQueue", chatMessageInfo);
+        rabbitTemplate.convertAndSend(QUEUE_NAME, chatMessageInfo);
         System.out.println("Sent message to RabbitMQ: " + chatMessageInfo);
     }
 }
