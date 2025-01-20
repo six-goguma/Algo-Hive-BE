@@ -15,7 +15,7 @@ public class MessageConsumer {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queues = QUEUE_NAME, concurrency = "5-10")
     public void receiveMessage(ChatMessageInfo chatMessageInfo) {
 
         messagingTemplate.convertAndSend("/api/topic/messages/" + chatMessageInfo.roomName(), chatMessageInfo);
