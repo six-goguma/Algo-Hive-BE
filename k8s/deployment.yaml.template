@@ -53,6 +53,26 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: gemini_api_key
+            - name: RABBITMQ_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: rabbitmq_hostname
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: rabbitmq_username
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: rabbitmq_password
+            - name: RABBITMQ_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: rabbitmq_port
           readinessProbe:
             httpGet:
               path: /actuator/health
