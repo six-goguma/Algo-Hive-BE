@@ -16,6 +16,5 @@ public class MessageProducer {
 
     public void sendMessage(ChatMessageInfo chatMessageInfo) {
         rabbitTemplate.convertAndSend(QUEUE_NAME, chatMessageInfo);
-        System.out.println("Sent message to RabbitMQ: " + chatMessageInfo);
     }
 }

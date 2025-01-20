@@ -6,6 +6,7 @@ import com.knu.algo_hive.chat.dto.RoomResponse;
 import com.knu.algo_hive.chat.service.ChatMessageService;
 import com.knu.algo_hive.chat.service.RoomService;
 import com.knu.algo_hive.common.dto.StringTypeResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/chat")
+@Tag(name = "AI", description = "코드 분석 및 블로그 글 작성 AI 관련 API")
 public class ChatController {
 
     private final RoomService roomService;

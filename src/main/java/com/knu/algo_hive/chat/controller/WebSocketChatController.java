@@ -5,6 +5,7 @@ import com.knu.algo_hive.chat.dto.ChatMessageRequest;
 import com.knu.algo_hive.chat.dto.UserNameRequest;
 import com.knu.algo_hive.chat.rabbitmq.MessageProducer;
 import com.knu.algo_hive.chat.service.ChatMessageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 @Controller
+@Tag(name = "AI", description = "코드 분석 및 블로그 글 작성 AI 관련 API")
 public class WebSocketChatController {
 
     private final MessageProducer messageProducer;

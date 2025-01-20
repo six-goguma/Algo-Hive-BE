@@ -17,7 +17,6 @@ public class MessageConsumer {
 
     @RabbitListener(queues = QUEUE_NAME)
     public void receiveMessage(ChatMessageInfo chatMessageInfo) {
-        System.out.println("Received message from RabbitMQ: " + chatMessageInfo);
 
         messagingTemplate.convertAndSend("/api/topic/messages/" + chatMessageInfo.roomName(), chatMessageInfo);
     }
