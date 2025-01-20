@@ -1,28 +1,50 @@
-//package com.knu.algo_hive.chat.controller;
-//
-//import com.knu.algo_hive.chat.entity.ChatMessage;
-//import com.knu.algo_hive.chat.repository.ChatMessageRepository;
-//import org.springframework.messaging.handler.annotation.MessageMapping;
-//import org.springframework.messaging.simp.SimpMessagingTemplate;
-//import org.springframework.stereotype.Controller;
-//
-//@Controller
-//public class ChatController {
-//
-//    private final SimpMessagingTemplate simpMessagingTemplate;
-//    private final ChatMessageRepository chatMessageRepository;
-//
-//    public ChatController(SimpMessagingTemplate simpMessagingTemplate, ChatMessageRepository chatMessageRepository) {
-//        this.simpMessagingTemplate = simpMessagingTemplate;
-//        this.chatMessageRepository = chatMessageRepository;
-//    }
-//
-//    @MessageMapping("/chat")
-//    public void sendMessage(ChatMessage chatMessage) {
-//        // Redis로 메시지를 전송 (브로캐스트)
-//        chatMessageRepository.save(chatMessage);
-//
-//        // 메시지를 "/topic/chatRoom"으로 브로드캐스트
-//        simpMessagingTemplate.convertAndSend("/topic/chatRoom", chatMessage);
-//    }
-//}
+package com.knu.algo_hive.chat.controller;
+
+import com.knu.algo_hive.chat.dto.ChatMessageInfo;
+import com.knu.algo_hive.chat.dto.RoomRequest;
+import com.knu.algo_hive.chat.dto.RoomResponse;
+import com.knu.algo_hive.chat.service.ChatMessageService;
+import com.knu.algo_hive.chat.service.RoomService;
+import com.knu.algo_hive.common.dto.StringTypeResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/chat")
+public class ChatController {
+
+    private final RoomService roomService;
+    private final ChatMessageService chatMessageService;
+
+    public ChatController(RoomService roomService, ChatMessageService chatMessageService) {
+        this.roomService = roomService;
+        this.chatMessageService = chatMessageService;
+    }
+
+    @PostMapping("/rooms")
+    public ResponseEntity<RoomResponse> createRoom(@RequestBody RoomRequest roomRequest) {
+        RoomResponse roomResponse = roomService.createRoom(roomRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(roomResponse);
+    }
+
+    @GetMapping("/rooms")
+    public ResponseEntity<List<RoomResponse>> getAllRooms() {
+        List<RoomResponse> roomResponses = roomService.getAllRooms();
+        return ResponseEntity.ok().body(roomResponses);
+    }
+
+    @DeleteMapping("/rooms/{roomName}")
+    public ResponseEntity<StringTypeResponse> deleteRoomByRoomName(@PathVariable("roomName") String roomName) {
+        roomService.deleteRoom(roomName);
+        return ResponseEntity.ok().body(new StringTypeResponse("삭제되었습니다."));
+    }
+
+    @GetMapping("/messages/{roomName}")
+    public ResponseEntity<List<ChatMessageInfo>> getRecentMessages(@PathVariable("roomName") String roomName) {
+        List<ChatMessageInfo> messageInfos = chatMessageService.getRecentMessages(roomName);
+        return ResponseEntity.ok().body(messageInfos);
+    }
+}
