@@ -18,6 +18,6 @@ public class MessageConsumer {
     public void receiveMessage(ChatMessageInfo chatMessageInfo) {
         System.out.println("Received message from RabbitMQ: " + chatMessageInfo);
 
-        messagingTemplate.convertAndSend("/topic/messages/" + chatMessageInfo.roomName(), chatMessageInfo);
+        messagingTemplate.convertAndSend("/api/topic/messages/" + chatMessageInfo.roomName(), chatMessageInfo);
     }
 }
