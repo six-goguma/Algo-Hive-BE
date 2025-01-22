@@ -6,6 +6,7 @@ import com.knu.algo_hive.chat.entity.ChatMessage;
 import com.knu.algo_hive.chat.entity.Room;
 import com.knu.algo_hive.chat.repository.ChatMessageRepository;
 import com.knu.algo_hive.chat.repository.RoomRepository;
+import com.knu.algo_hive.common.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class ChatMessageService {
     public ChatMessageInfo convertAndSaveChatMessage(ChatMessageRequest chatMessageRequest, String roomName) {
 
         Room room = roomRepository.findByRoomName(roomName)
-                .orElseThrow(() -> new RuntimeException("해당 roomName은 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 roomName은 존재하지 않습니다."));
 
         chatMessageRepository.save(new ChatMessage(chatMessageRequest.sender(), chatMessageRequest.content(), room));
 
@@ -37,7 +38,7 @@ public class ChatMessageService {
     @Transactional(readOnly = true)
     public List<ChatMessageInfo> getRecentMessages(String roomName) {
         Room room = roomRepository.findByRoomName(roomName)
-                .orElseThrow(() -> new RuntimeException("roomName에 해당하는 방이 없습니다."));
+                .orElseThrow(() -> new NotFoundException("roomName에 해당하는 방이 없습니다."));
         return chatMessageRepository.findTop50ByRoomOrderByChatTimeAsc(room).stream()
                 .map(ChatMessage -> new ChatMessageInfo(
                         ChatMessage.getUsername(),

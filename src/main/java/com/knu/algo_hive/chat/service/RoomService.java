@@ -4,6 +4,8 @@ import com.knu.algo_hive.chat.dto.RoomRequest;
 import com.knu.algo_hive.chat.dto.RoomResponse;
 import com.knu.algo_hive.chat.entity.Room;
 import com.knu.algo_hive.chat.repository.RoomRepository;
+import com.knu.algo_hive.common.exception.ConflictException;
+import com.knu.algo_hive.common.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ public class RoomService {
     @Transactional
     public RoomResponse createRoom(RoomRequest roomRequest) {
         if (roomRepository.existsByRoomName(roomRequest.roomName())) {
-            throw new RuntimeException("Room 이름 중복입니다.");
+            throw new ConflictException("Room 이름 중복입니다.");
         }
         Room room = roomRepository.save(new Room(roomRequest.roomName()));
         return new RoomResponse(room.getRoomName());
@@ -40,7 +42,7 @@ public class RoomService {
     @Transactional
     public void deleteRoom(String roomName) {
         Room room = roomRepository.findByRoomName(roomName)
-                .orElseThrow(() -> new RuntimeException("roomName에 해당하는 방이 없습니다."));
+                .orElseThrow(() -> new NotFoundException("roomName에 해당하는 방이 없습니다."));
         roomRepository.delete(room);
     }
 }
