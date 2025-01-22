@@ -1,6 +1,5 @@
 package com.knu.algo_hive.auth.service;
 
-import com.knu.algo_hive.auth.CustomUserDetails;
 import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
