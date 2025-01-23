@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class MemberService{
+public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -38,11 +38,11 @@ public class MemberService{
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
     private final long ACCESS_TEN_MINUTES = 1000 * 60 * 10;
 
-    public void register(RegisterRequest registerRequest){
+    public void register(RegisterRequest registerRequest) {
         checkEmail(registerRequest.email());
         checkNickName(registerRequest.nickName());
 
-        if(!Boolean.parseBoolean((String)redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
+        if (!Boolean.parseBoolean((String) redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
             throw new BadRequestException("이메일 인증을 하지 않았습니다.");
 
         Member member = new Member(registerRequest.nickName(),
@@ -52,7 +52,7 @@ public class MemberService{
         memberRepository.save(member);
     }
 
-    public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response){
+    public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
 
@@ -63,12 +63,12 @@ public class MemberService{
         securityContextRepository.saveContext(context, request, response);
     }
 
-    public void checkEmail(String email){
-        if(memberRepository.existsByEmail(email)) throw new BadRequestException("중복된 이메일이 있습니다.");
+    public void checkEmail(String email) {
+        if (memberRepository.existsByEmail(email)) throw new BadRequestException("중복된 이메일이 있습니다.");
     }
 
-    public void checkNickName(String nickname){
-        if(memberRepository.existsByNickName(nickname)) throw new BadRequestException("중복된 닉네임이 있습니다.");
+    public void checkNickName(String nickname) {
+        if (memberRepository.existsByNickName(nickname)) throw new BadRequestException("중복된 닉네임이 있습니다.");
     }
 
     public void postCode(String email) throws MessagingException {
@@ -84,11 +84,11 @@ public class MemberService{
         redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
     }
 
-    public void verifyCode(String email, String code){
+    public void verifyCode(String email, String code) {
         checkEmail(email);
         String storedCode = (String) redisTemplate.opsForHash().get(email, "code");
 
-        if(storedCode.equals(code)){
+        if (storedCode.equals(code)) {
             redisTemplate.opsForHash().put(email, "verified", true);
             redisTemplate.expire(email, ACCESS_TEN_MINUTES, TimeUnit.MILLISECONDS);
             return;

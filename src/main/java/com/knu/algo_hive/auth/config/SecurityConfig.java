@@ -20,13 +20,14 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .anyRequest().authenticated())
+//                        .requestMatchers("/api/v1/auth/**").permitAll()
+//                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .sessionManagement((session) -> session
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true));
@@ -56,7 +57,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

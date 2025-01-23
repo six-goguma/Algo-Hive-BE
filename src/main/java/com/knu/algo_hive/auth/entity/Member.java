@@ -23,9 +23,10 @@ public class Member {
     @NotNull
     private String password;
 
-    public Member(){}
+    public Member() {
+    }
 
-    public Member(String nickName, String email, String password){
+    public Member(String nickName, String email, String password) {
         this.nickName = nickName;
         this.email = email;
         this.password = password;
