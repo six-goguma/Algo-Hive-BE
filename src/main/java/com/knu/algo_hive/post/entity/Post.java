@@ -45,6 +45,6 @@ public class Post {
         this.summary = summary;
         this.thumbnail = thumbnail;
         this.title = title;
-        this.member = getMember();
+        this.member = member;
     }
 }
