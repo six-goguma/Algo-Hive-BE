@@ -21,6 +21,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -40,6 +41,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'io.projectreactor.netty:reactor-netty-core:1.2.2'
+    implementation 'io.projectreactor.netty:reactor-netty-http:1.2.2'
 }
 
 tasks.named('test') {

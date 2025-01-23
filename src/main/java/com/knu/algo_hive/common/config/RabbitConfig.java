@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    private static final String QUEUE_NAME = "myQueue";
+    private static final String QUEUE_NAME = "algoQueue";
     private static final boolean DURABLE = true;
     private static final int CONNECTION_TIMEOUT = 10000;
     private static final int REQUESTED_HEARTBEAT = 60;
@@ -31,7 +31,7 @@ public class RabbitConfig {
     private int port;
 
     @Bean
-    public Queue myQueue() {
+    public Queue algoQueue() {
         return new Queue(QUEUE_NAME, DURABLE);
     }
 

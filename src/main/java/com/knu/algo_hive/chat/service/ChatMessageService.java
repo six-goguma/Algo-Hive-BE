@@ -35,11 +35,11 @@ public class ChatMessageService {
         return new ChatMessageInfo(chatMessageRequest.sender(), chatMessageRequest.content(), roomName);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ChatMessageInfo> getRecentMessages(String roomName) {
         Room room = roomRepository.findByRoomName(roomName)
                 .orElseThrow(() -> new NotFoundException("roomName에 해당하는 방이 없습니다."));
-        return chatMessageRepository.findTop50ByRoomOrderByChatTimeAsc(room).stream()
+        return chatMessageRepository.findTop50ByRoomOrderByChatTimeDesc(room).stream()
                 .map(ChatMessage -> new ChatMessageInfo(
                         ChatMessage.getUsername(),
                         ChatMessage.getContent(),
