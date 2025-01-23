@@ -73,6 +73,21 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: rabbitmq_port
+            - name: SMTP_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: smtp_email
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: smtp_password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: redis_password
           readinessProbe:
             httpGet:
               path: /actuator/health
