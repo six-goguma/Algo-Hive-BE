@@ -100,7 +100,7 @@ public class PostController {
     }
 
     @GetMapping("/api/v1/posts/tags/{tagName}")
-    @Operation(summary = " 태그별로 모든 게시물 페이지네이션 조회",
+    @Operation(summary = " 태그별로 모든 게시물 페이지네이션 조회(미구현)",
             description = "페이지네이션 적용. /api/v1/posts?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc} ✅ex)좋아요 개수 기준 내림차순 조회 /api/v1/posts?page=0&size=10&sort=likeCount,desc"
 
     )
@@ -109,15 +109,15 @@ public class PostController {
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "페이지 크기", example = "10", schema = @Schema(type = "integer", defaultValue = "10")),
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
-    public ResponseEntity<Page<PostSummaryResponse>> getAllPostSummariesByTag(@Parameter(hidden = true)
+    public ResponseEntity<?> getAllPostSummariesByTag(@Parameter(hidden = true)
                                                                               @PageableDefault(sort = "createdAt,desc")
                                                                               @PathVariable String tagName,
                                                                               Pageable pageable) {
-        return ResponseEntity.ok(postService.getAllPostSummariesByTag(tagName, pageable));
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/api/v1/{nickname}/posts/tags/{tagName}")
-    @Operation(summary = "특정 유저의 태그별 게시물 페이지네이션 조회",
+    @Operation(summary = "특정 유저의 태그별 게시물 페이지네이션 조회(미구현)",
             description = "페이지네이션 적용. /api/v1/posts?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc} ✅ex)좋아요 개수 기준 내림차순 조회 /api/v1/posts?page=0&size=10&sort=likeCount,desc"
 
     )
@@ -126,12 +126,12 @@ public class PostController {
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "페이지 크기", example = "10", schema = @Schema(type = "integer", defaultValue = "10")),
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
-    public ResponseEntity<Page<PostSummaryResponse>> getPostSummariesByTag(@Parameter(hidden = true)
+    public ResponseEntity<?> getPostSummariesByTag(@Parameter(hidden = true)
                                                                            @PageableDefault(sort = "createdAt,desc")
                                                                            @PathVariable String tagName,
                                                                            @PathVariable String nickname,
                                                                            Pageable pageable
     ) {
-        return ResponseEntity.ok(postService.getPostSummariesByTag(tagName, nickname, pageable));
+        return ResponseEntity.ok().build();
     }
 }

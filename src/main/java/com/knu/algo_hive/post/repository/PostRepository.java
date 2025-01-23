@@ -24,20 +24,20 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE m.nickName = :nickname")
     Page<PostSummaryResponse> findPostSummariesByAuthorPaged(Pageable pageable, @Param("nickname") String nickname);
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
-            "FROM Post p " +
-            "JOIN p.member m " +
-            "LEFT JOIN p.tags t " +
-            "where t.name = :tagName ")
-    Page<PostSummaryResponse> findPostSummariesByTagPaged(Pageable pageable, @Param("tagName") String tagName);
-
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
-            "FROM Post p " +
-            "JOIN p.member m " +
-            "LEFT JOIN p.tags t " +
-            "where t.name = :tagName " +
-            "AND m.nickName = :nickname")
-    Page<PostSummaryResponse> findPostSummariesByTagAndNicknamePaged(Pageable pageable, @Param("tagName") String tagName, @Param("nickname") String nickname);
+//    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+//            "FROM Post p " +
+//            "JOIN p.member m " +
+//            "LEFT JOIN p.tags t " +
+//            "where t.name = :tagName ")
+//    Page<PostSummaryResponse> findPostSummariesByTagPaged(Pageable pageable, @Param("tagName") String tagName);
+//
+//    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+//            "FROM Post p " +
+//            "JOIN p.member m " +
+//            "LEFT JOIN p.tags t " +
+//            "where t.name = :tagName " +
+//            "AND m.nickName = :nickname")
+//    Page<PostSummaryResponse> findPostSummariesByTagAndNicknamePaged(Pageable pageable, @Param("tagName") String tagName, @Param("nickname") String nickname);
 
     @Query("SELECT p " +
             "FROM Post p " +

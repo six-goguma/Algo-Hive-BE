@@ -32,13 +32,6 @@ public class Post {
     private LocalDateTime updatedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "post_tag",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    Set<Tag> tags = new HashSet<>();
 
     public Post(String content, String summary, String thumbnail, String title, Member member) {
         this.content = content;
