@@ -73,13 +73,13 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    @Transactional(readOnly = true)
-    public Page<PostSummaryResponse> getAllPostSummariesByTag(String tagName, Pageable pageable) {
-        return postRepository.findPostSummariesByTagPaged(pageable, tagName);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PostSummaryResponse> getPostSummariesByTag(String tagName, String nickname, Pageable pageable) {
-        return postRepository.findPostSummariesByTagAndNicknamePaged(pageable, tagName, nickname);
-    }
+//    @Transactional(readOnly = true)
+//    public Page<PostSummaryResponse> getAllPostSummariesByTag(String tagName, Pageable pageable) {
+//        return postRepository.findPostSummariesByTagPaged(pageable, tagName);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public Page<PostSummaryResponse> getPostSummariesByTag(String tagName, String nickname, Pageable pageable) {
+//        return postRepository.findPostSummariesByTagAndNicknamePaged(pageable, tagName, nickname);
+//    }
 }
