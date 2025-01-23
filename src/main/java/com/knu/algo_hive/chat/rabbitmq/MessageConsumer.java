@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageConsumer {
-    private static final String QUEUE_NAME = "myQueue";
+    private static final String QUEUE_NAME = "algoQueue";
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -18,6 +18,6 @@ public class MessageConsumer {
     @RabbitListener(queues = QUEUE_NAME, concurrency = "5-10")
     public void receiveMessage(ChatMessageInfo chatMessageInfo) {
 
-        messagingTemplate.convertAndSend("/api/topic/messages/" + chatMessageInfo.roomName(), chatMessageInfo);
+        messagingTemplate.convertAndSend("/topic/" + chatMessageInfo.roomName(), chatMessageInfo);
     }
 }

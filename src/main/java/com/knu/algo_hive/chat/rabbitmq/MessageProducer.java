@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageProducer {
-    private static final String QUEUE_NAME = "myQueue";
+    private static final String QUEUE_NAME = "algoQueue";
 
     private final RabbitTemplate rabbitTemplate;
 
