@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     private static final String MESSAGE_QUEUE_NAME = "algoQueue";
-    private static final String USER_QUEUE_NAME = "userQueue";
+    private static final String USER_QUEUE_NAME = "allUserQueue";
 
     private static final boolean DURABLE = true;
     private static final int CONNECTION_TIMEOUT = 10000;
