@@ -30,17 +30,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE p.id = :postId  ")
     Optional<Post> findByPostId(@Param("postId") Long postId);
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(pt.post.id, pt.post.title, pt.post.thumbnail, pt.post.summary, pt.post.createdAt, pt.post.likeCount, pt.post.commentCount, m.nickName) " +
-            "FROM PostTag pt " +
-            "JOIN pt.post p " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+            "FROM Post p " +
             "JOIN p.member m " +
+            "JOIN PostTag pt ON pt.post = p " +
             "WHERE pt.tagId = :tagId ")
     Page<PostSummaryResponse> findPostSummariesBtTagIdPaged(@Param("tagId") int tagId, Pageable pageable);
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(pt.post.id, pt.post.title, pt.post.thumbnail, pt.post.summary, pt.post.createdAt, pt.post.likeCount, pt.post.commentCount, m.nickName) " +
-            "FROM PostTag pt " +
-            "JOIN pt.post p " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+            "FROM Post p " +
             "JOIN p.member m " +
-            "WHERE pt.tagId = :tagId AND m.nickName = :nickName ")
+            "JOIN PostTag pt ON pt.post = p " +
+            "WHERE pt.tagId = :tagId AND m.nickName = :nickname ")
     Page<PostSummaryResponse> findPostSummariesBtTagIdAndNickname(@Param("tagId") int tagId, @Param("nickname") String nickname, Pageable pageable);
 }
