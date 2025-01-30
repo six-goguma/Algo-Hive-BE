@@ -1,8 +1,8 @@
 package com.knu.algo_hive.post.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public record TagResponse(
-        Set<String> tags
+        List<Integer> tagIds
 ) {
 }
