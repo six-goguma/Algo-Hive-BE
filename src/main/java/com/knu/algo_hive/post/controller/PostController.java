@@ -45,7 +45,7 @@ public class PostController {
 
     @GetMapping("/api/v1/{nickname}/posts")
     @Operation(summary = "특정 유저의 게시물 페이지네이션 조회",
-            description = "페이지네이션 적용. /api/v1/posts?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc} ✅ex)좋아요 개수 기준 내림차순 조회 /api/v1/posts?page=0&size=10&sort=likeCount,desc"
+            description = "페이지네이션 적용. /api/v1/{nickname}/posts?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc} ✅ex)좋아요 개수 기준 내림차순 조회 /api/v1/{nickname}/posts?page=0&size=10&sort=likeCount,desc"
     )
     @Parameters({
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "페이지 번호 (0부터 시작)", example = "0", schema = @Schema(type = "integer", defaultValue = "0")),
