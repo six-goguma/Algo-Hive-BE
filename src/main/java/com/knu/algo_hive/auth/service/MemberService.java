@@ -42,7 +42,7 @@ public class MemberService {
     private final long ACCESS_TEN_MINUTES = 1000 * 60 * 10;
 
     @Transactional
-    public LoginResponse register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) {
         checkEmail(registerRequest.email());
         checkNickName(registerRequest.nickName());
 
@@ -54,7 +54,6 @@ public class MemberService {
                 passwordEncoder.encode(registerRequest.password()));
 
         memberRepository.save(member);
-        return new LoginResponse(member.getNickName());
     }
 
     @Transactional(readOnly = true)
