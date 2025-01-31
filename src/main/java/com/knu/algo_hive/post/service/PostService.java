@@ -53,7 +53,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long postId, PostRequest request, String email) {
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시물을 찾을 수 없습니다."));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException("이 게시물은 당신의 것이 아닙니다.");
 
@@ -66,7 +66,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, String email) {
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new RuntimeException("Post Not Found"));
+                .orElseThrow(() -> new NotFoundException("게시물을 찾을 수 없습니다."));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException("이 게시물은 당신의 것이 아닙니다.");
 
