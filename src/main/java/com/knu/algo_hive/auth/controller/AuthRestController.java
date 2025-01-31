@@ -3,12 +3,17 @@ package com.knu.algo_hive.auth.controller;
 import com.knu.algo_hive.auth.dto.*;
 import com.knu.algo_hive.auth.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthRestController {
     private final MemberService memberService;
 
-    @Operation(summary = "회원 가입 기능(미구현)",
+    @Operation(summary = "회원 가입 기능",
             description = "닉네임, 이메일, 비밀번호를 입력받아 회원가입을 진행한다.",
             security = @SecurityRequirement(name = "Session 제외"))
     @PostMapping("/register")
