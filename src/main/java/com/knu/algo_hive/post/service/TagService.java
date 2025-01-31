@@ -36,15 +36,14 @@ public class TagService {
                 .orElseThrow(() -> new NotFoundException("게시물을 찾을 수 없습니다."));
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException("이 게시물은 당신의 것이 아닙니다.");
 
-        if (request.tagIds().isEmpty()) {
-            postTagRepository.deleteAllByPost(post);
-            return;
-        }
+        postTagRepository.deleteAllByPost(post);
 
-        Set<PostTag> newPostTags = new HashSet<>();
-        for (int tagId : request.tagIds()) {
-            newPostTags.add(new PostTag(post, tagId));
+        if (!request.tagIds().isEmpty()) {
+            Set<PostTag> newPostTags = new HashSet<>();
+            for (int tagId : request.tagIds()) {
+                newPostTags.add(new PostTag(post, tagId));
+            }
+            postTagRepository.saveAll(newPostTags);
         }
-        postTagRepository.saveAll(newPostTags);
     }
 }
