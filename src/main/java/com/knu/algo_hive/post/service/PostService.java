@@ -53,7 +53,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long postId, PostRequest request, String email) {
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new RuntimeException("게시물을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("게시물을 찾을 수 없습니다."));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException("이 게시물은 당신의 것이 아닙니다.");
 
@@ -66,20 +66,20 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, String email) {
         Post post = postRepository.findByPostId(postId)
-                .orElseThrow(() -> new RuntimeException("Post Not Found"));
+                .orElseThrow(() -> new NotFoundException("게시물을 찾을 수 없습니다."));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException("이 게시물은 당신의 것이 아닙니다.");
 
         postRepository.deleteById(postId);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<PostSummaryResponse> getAllPostSummariesByTag(String tagName, Pageable pageable) {
-//        return postRepository.findPostSummariesByTagPaged(pageable, tagName);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public Page<PostSummaryResponse> getPostSummariesByTag(String tagName, String nickname, Pageable pageable) {
-//        return postRepository.findPostSummariesByTagAndNicknamePaged(pageable, tagName, nickname);
-//    }
+    @Transactional(readOnly = true)
+    public Page<PostSummaryResponse> getAllPostSummariesByTag(int tagId, Pageable pageable) {
+        return postRepository.findPostSummariesBtTagIdPaged(tagId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostSummaryResponse> getPostSummariesByTagIdAndNickname(int tagId, String nickname, Pageable pageable) {
+        return postRepository.findPostSummariesBtTagIdAndNickname(tagId, nickname, pageable);
+    }
 }

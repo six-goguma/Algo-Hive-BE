@@ -6,6 +6,6 @@ import java.util.Set;
 
 public record TagRequest(
         @NotNull
-        Set<String> tags
+        Set<Integer> tagIds
 ) {
 }
