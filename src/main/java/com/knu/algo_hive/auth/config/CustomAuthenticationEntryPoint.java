@@ -1,6 +1,7 @@
 package com.knu.algo_hive.auth.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.common.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +24,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
         problemDetail.setTitle("Unauthorized");
 
         response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
