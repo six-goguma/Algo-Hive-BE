@@ -7,6 +7,7 @@ import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.repository.MemberRepository;
 import com.knu.algo_hive.common.exception.BadRequestException;
 import com.knu.algo_hive.common.exception.ConflictException;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,7 +48,7 @@ public class MemberService {
         checkNickName(registerRequest.nickName());
 
         if (!Boolean.parseBoolean((String) redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
-            throw new BadRequestException("이메일 인증을 하지 않았습니다.");
+            throw new BadRequestException(ErrorCode.NOT_VERIFY_EMAIL);
 
         Member member = new Member(registerRequest.nickName(),
                 registerRequest.email(),
@@ -75,12 +76,12 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkEmail(String email) {
-        if (memberRepository.existsByEmail(email)) throw new ConflictException("중복된 이메일이 있습니다.");
+        if (memberRepository.existsByEmail(email)) throw new ConflictException(ErrorCode.DUPLICATE_EMAIL);
     }
 
     @Transactional(readOnly = true)
     public void checkNickName(String nickname) {
-        if (memberRepository.existsByNickName(nickname)) throw new ConflictException("중복된 닉네임이 있습니다.");
+        if (memberRepository.existsByNickName(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
     public void postCode(String email) throws MessagingException {
@@ -106,6 +107,6 @@ public class MemberService {
             return;
         }
 
-        throw new BadRequestException("인증번호를 잘못 입력하였습니다.");
+        throw new BadRequestException(ErrorCode.WRONG_VERIFICATION_CODE);
     }
 }

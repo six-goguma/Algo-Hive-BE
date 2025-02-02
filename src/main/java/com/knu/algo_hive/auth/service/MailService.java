@@ -1,6 +1,7 @@
 package com.knu.algo_hive.auth.service;
 
 import com.knu.algo_hive.common.exception.ConflictException;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +29,7 @@ public class MailService {
         try {
             javaMailSender.send(message); // 메일 발송
         } catch (MailException e) {
-            e.printStackTrace();
-            throw new ConflictException("메일 발송 중 오류가 발생했습니다.");
+            throw new ConflictException(ErrorCode.FAIL_SEND_EMAIL);
         }
     }
 
