@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "post_like")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
