@@ -1,5 +1,6 @@
 package com.knu.algo_hive.auth.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,17 +21,21 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
 //                        .requestMatchers("/api/v1/auth/**").permitAll()
-//                        .anyRequest().authenticated())
-                        .anyRequest().permitAll())
+//                        .requestMatchers("/swagger-ui/**").permitAll()
+//                        .anyRequest().authenticated()
+                          .anyRequest().permitAll())
                 .sessionManagement((session) -> session
                         .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true));
+                        .maxSessionsPreventsLogin(true))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                );
         return httpSecurity.build();
     }
 
