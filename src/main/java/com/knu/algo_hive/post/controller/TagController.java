@@ -1,6 +1,8 @@
 package com.knu.algo_hive.post.controller;
 
 import com.knu.algo_hive.auth.service.CustomUserDetails;
+import com.knu.algo_hive.common.annotation.ApiErrorCodeExamples;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.TagRequest;
 import com.knu.algo_hive.post.dto.TagResponse;
 import com.knu.algo_hive.post.service.TagService;
@@ -32,6 +34,7 @@ public class TagController {
     @Operation(summary = "게시물 태그 저장",
             description = "태그 저장"
     )
+    @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> addTags(@PathVariable Long postId,
                                         @RequestBody TagRequest request,
                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -43,6 +46,7 @@ public class TagController {
     @Operation(summary = "게시물 태그 수정",
             description = "태그 수정"
     )
+    @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> updateTags(@PathVariable Long postId,
                                            @RequestBody TagRequest request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
