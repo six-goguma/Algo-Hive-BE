@@ -37,7 +37,11 @@ public class UserStatusConsumer {
             redisTemplate.opsForHash().increment(REDIS_ROOM_COUNT_KEY, roomName, 1);
         } else {
             redisTemplate.opsForSet().remove(REDIS_USER_KEY, user);
-            redisTemplate.opsForHash().increment(REDIS_ROOM_COUNT_KEY, roomName, -1);
+            Long count = redisTemplate.opsForHash().increment(REDIS_ROOM_COUNT_KEY, roomName, -1);
+
+            if (count <= 0) {
+                redisTemplate.opsForHash().delete(REDIS_ROOM_COUNT_KEY, roomName);
+            }
         }
 
         Set<Object> rawUsers = redisTemplate.opsForSet().members(REDIS_USER_KEY);
