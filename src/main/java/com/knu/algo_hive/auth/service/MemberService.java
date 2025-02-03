@@ -1,10 +1,13 @@
 package com.knu.algo_hive.auth.service;
 
 import com.knu.algo_hive.auth.dto.LoginRequest;
+import com.knu.algo_hive.auth.dto.LoginResponse;
 import com.knu.algo_hive.auth.dto.RegisterRequest;
 import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.repository.MemberRepository;
 import com.knu.algo_hive.common.exception.BadRequestException;
+import com.knu.algo_hive.common.exception.ConflictException;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -38,12 +42,13 @@ public class MemberService {
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
     private final long ACCESS_TEN_MINUTES = 1000 * 60 * 10;
 
+    @Transactional
     public void register(RegisterRequest registerRequest) {
         checkEmail(registerRequest.email());
         checkNickName(registerRequest.nickName());
 
         if (!Boolean.parseBoolean((String) redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
-            throw new BadRequestException("이메일 인증을 하지 않았습니다.");
+            throw new BadRequestException(ErrorCode.NOT_VERIFY_EMAIL);
 
         Member member = new Member(registerRequest.nickName(),
                 registerRequest.email(),
@@ -52,7 +57,8 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
 
@@ -61,14 +67,21 @@ public class MemberService {
         SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
         context.setAuthentication(authentication);
         securityContextRepository.saveContext(context, request, response);
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Member member = userDetails.getMember();
+
+        return new LoginResponse(member.getNickName());
     }
 
+    @Transactional(readOnly = true)
     public void checkEmail(String email) {
-        if (memberRepository.existsByEmail(email)) throw new BadRequestException("중복된 이메일이 있습니다.");
+        if (memberRepository.existsByEmail(email)) throw new ConflictException(ErrorCode.DUPLICATE_EMAIL);
     }
 
+    @Transactional(readOnly = true)
     public void checkNickName(String nickname) {
-        if (memberRepository.existsByNickName(nickname)) throw new BadRequestException("중복된 닉네임이 있습니다.");
+        if (memberRepository.existsByNickName(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
     public void postCode(String email) throws MessagingException {
@@ -94,6 +107,6 @@ public class MemberService {
             return;
         }
 
-        throw new BadRequestException("인증번호를 잘못 입력하였습니다.");
+        throw new BadRequestException(ErrorCode.WRONG_VERIFICATION_CODE);
     }
 }
