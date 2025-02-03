@@ -45,7 +45,7 @@ public class CommentService {
 
     @Transactional
     public void updateComment(CommentRequest request, Long commentId, String email) {
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdWithMember(commentId)
                 .orElseThrow(() -> new NotFoundException("comment not found"));
         if (!comment.getMember().getEmail().equals(email)) {
             throw new ForbiddenException("이 댓글은 당신의 것이 아닙니다");
@@ -56,7 +56,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId, String email) {
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findByIdWithMember(commentId)
                 .orElseThrow(() -> new NotFoundException("comment not found"));
         if (!comment.getMember().getEmail().equals(email)) {
             throw new ForbiddenException("이 댓글은 당신의 것이 아닙니다");
