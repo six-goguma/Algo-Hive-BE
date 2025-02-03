@@ -9,8 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -33,6 +31,8 @@ public class Post {
     private LocalDateTime updatedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+    @Version
+    private Integer version;
 
     public Post(String content, String summary, String thumbnail, String title, Member member) {
         this.content = content;

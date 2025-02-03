@@ -2,6 +2,7 @@ package com.knu.algo_hive.post.service;
 
 import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.repository.MemberRepository;
+import com.knu.algo_hive.common.exception.ConflictException;
 import com.knu.algo_hive.common.exception.NotFoundException;
 import com.knu.algo_hive.post.dto.LikeCountResponse;
 import com.knu.algo_hive.post.dto.LikeStatusResponse;
@@ -9,6 +10,7 @@ import com.knu.algo_hive.post.entity.Like;
 import com.knu.algo_hive.post.entity.Post;
 import com.knu.algo_hive.post.repository.LikeRepository;
 import com.knu.algo_hive.post.repository.PostRepository;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,21 @@ public class LikeService {
             post.setLikeCount(post.getLikeCount() + 1);
             return new LikeStatusResponse(true);
         }
+    }
+
+    @Transactional
+    public LikeStatusResponse changeLikeStatusWithRetry(Long postId, String email) {
+        int retryCount = 2;
+        while (retryCount-- > 0) {
+            try {
+                return changeLikeStatus(postId, email);
+            } catch (ObjectOptimisticLockingFailureException e) {
+                if (retryCount == 0) {
+                    throw new ConflictException("좋아요 수정 요청이 충돌 하였습니다. 다시 시도 부탁드립니다.");
+                }
+            }
+        }
+        return new LikeStatusResponse(false);
     }
 
     @Transactional(readOnly = true)

@@ -37,7 +37,7 @@ public class LikeController {
     )
     public ResponseEntity<LikeStatusResponse> changeLikeStatus(@PathVariable Long postId,
                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.ok(likeService.changeLikeStatus(postId, userDetails.getUsername()));
+        return ResponseEntity.ok(likeService.changeLikeStatusWithRetry(postId, userDetails.getUsername()));
     }
 
     @GetMapping("/api/v1/posts/{postId}/likes/status")
