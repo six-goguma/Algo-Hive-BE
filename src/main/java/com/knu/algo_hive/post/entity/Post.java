@@ -31,7 +31,7 @@ public class Post {
     private LocalDateTime updatedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-    @Version
+    @org.springframework.data.annotation.Version
     private Integer version;
 
     public Post(String content, String summary, String thumbnail, String title, Member member) {
