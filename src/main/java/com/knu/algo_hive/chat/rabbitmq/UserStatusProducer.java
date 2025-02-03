@@ -11,7 +11,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Service
 public class UserStatusProducer {
 
-    private static final String USER_QUEUE_NAME = "allUserQueue";
+    private static final String USER_QUEUE_NAME = "chatUsersQueue";
 
     private final RabbitTemplate rabbitTemplate;
 
