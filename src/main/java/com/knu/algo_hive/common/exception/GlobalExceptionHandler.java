@@ -11,41 +11,41 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ProblemDetail> handleForbiddenException(ForbiddenException e) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        ErrorCode errorCode = e.errorCode;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, errorCode.getMessage());
         problemDetail.setTitle("Forbidden");
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(problemDetail);
     }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ProblemDetail> handleConflictException(ConflictException e) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        ErrorCode errorCode = e.errorCode;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, errorCode.getMessage());
         problemDetail.setTitle("Conflict");
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(problemDetail);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFoundException(NotFoundException e) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        ErrorCode errorCode = e.errorCode;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, errorCode.getMessage());
         problemDetail.setTitle("Not Found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(problemDetail);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ProblemDetail> handleUnauthorizedException(UnauthorizedException e) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+        ErrorCode errorCode = e.errorCode;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, errorCode.getMessage());
         problemDetail.setTitle("Unauthorized");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problemDetail);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(problemDetail);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ProblemDetail> handleBadRequestException(BadRequestException e) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        ErrorCode errorCode = e.errorCode;
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorCode.getMessage());
         problemDetail.setTitle("Bad Request");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(problemDetail);
     }
 }
