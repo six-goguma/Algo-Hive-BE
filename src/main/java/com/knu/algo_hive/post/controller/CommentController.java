@@ -1,6 +1,8 @@
 package com.knu.algo_hive.post.controller;
 
 import com.knu.algo_hive.auth.service.CustomUserDetails;
+import com.knu.algo_hive.common.annotation.ApiErrorCodeExamples;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.CommentRequest;
 import com.knu.algo_hive.post.dto.CommentResponse;
 import com.knu.algo_hive.post.service.CommentService;
@@ -43,6 +45,7 @@ public class CommentController {
     @Operation(summary = "댓글 저장",
             description = "댓글 달기"
     )
+    @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.MEMBER_NOT_FOUND})
     public ResponseEntity<Void> saveComment(@RequestBody CommentRequest request,
                                             @PathVariable Long postId,
                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -54,6 +57,7 @@ public class CommentController {
     @Operation(summary = "댓글 수정",
             description = "댓글 수정하기"
     )
+    @ApiErrorCodeExamples({ErrorCode.COMMENT_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> updateComment(@RequestBody CommentRequest request,
                                               @PathVariable Long commentId,
                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -65,6 +69,7 @@ public class CommentController {
     @Operation(summary = "댓글 삭제",
             description = "댓글 삭제하기"
     )
+    @ApiErrorCodeExamples({ErrorCode.COMMENT_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         commentService.deleteComment(commentId, userDetails.getUsername());

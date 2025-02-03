@@ -2,6 +2,7 @@ package com.knu.algo_hive.post.service;
 
 import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.repository.MemberRepository;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.common.exception.ForbiddenException;
 import com.knu.algo_hive.common.exception.NotFoundException;
 import com.knu.algo_hive.post.dto.CommentRequest;
@@ -36,9 +37,9 @@ public class CommentService {
     @Transactional
     public void saveComment(CommentRequest request, Long postId, String email) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("post not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("member not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         commentRepository.save(new Comment(request.content(), member, post));
     }
@@ -46,9 +47,9 @@ public class CommentService {
     @Transactional
     public void updateComment(CommentRequest request, Long commentId, String email) {
         Comment comment = commentRepository.findByIdWithMember(commentId)
-                .orElseThrow(() -> new NotFoundException("comment not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
         if (!comment.getMember().getEmail().equals(email)) {
-            throw new ForbiddenException("이 댓글은 당신의 것이 아닙니다");
+            throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
         }
 
         comment.updateContent(request.content());
@@ -57,9 +58,9 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, String email) {
         Comment comment = commentRepository.findByIdWithMember(commentId)
-                .orElseThrow(() -> new NotFoundException("comment not found"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
         if (!comment.getMember().getEmail().equals(email)) {
-            throw new ForbiddenException("이 댓글은 당신의 것이 아닙니다");
+            throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
         }
 
         commentRepository.delete(comment);

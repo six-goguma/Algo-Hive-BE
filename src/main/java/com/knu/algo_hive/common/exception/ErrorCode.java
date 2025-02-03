@@ -28,7 +28,10 @@ public enum ErrorCode {
     ROOM_NOT_EXISTS(HttpStatus.NOT_FOUND, "roomName에 해당하는 방이 없습니다."),
 
     //Post
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다.");
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버을 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
+    NOT_YOUR_RESOURCE(HttpStatus.FORBIDDEN, "요청한 회원의 리소스가 아닙니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
