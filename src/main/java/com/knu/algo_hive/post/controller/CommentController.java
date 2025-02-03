@@ -4,7 +4,6 @@ import com.knu.algo_hive.auth.service.CustomUserDetails;
 import com.knu.algo_hive.post.dto.CommentRequest;
 import com.knu.algo_hive.post.dto.CommentResponse;
 import com.knu.algo_hive.post.service.CommentService;
-import com.knu.algo_hive.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -23,11 +22,9 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
-    private final PostService postService;
 
-    public CommentController(CommentService commentService, PostService postService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.postService = postService;
     }
 
     @GetMapping("/api/v1/posts/{postId}/comments")

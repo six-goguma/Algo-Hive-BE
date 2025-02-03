@@ -34,11 +34,11 @@ public class CommentService {
     }
 
     @Transactional
-    public void saveComment(CommentRequest request, Long postId,String email) {
+    public void saveComment(CommentRequest request, Long postId, String email) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(()->new NotFoundException("post not found"));
+                .orElseThrow(() -> new NotFoundException("post not found"));
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()->new NotFoundException("member not found"));
+                .orElseThrow(() -> new NotFoundException("member not found"));
 
         commentRepository.save(new Comment(request.content(), member, post));
     }
@@ -46,8 +46,8 @@ public class CommentService {
     @Transactional
     public void updateComment(CommentRequest request, Long commentId, String email) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(()->new NotFoundException("comment not found"));
-        if(!comment.getMember().getEmail().equals(email)){
+                .orElseThrow(() -> new NotFoundException("comment not found"));
+        if (!comment.getMember().getEmail().equals(email)) {
             throw new ForbiddenException("이 댓글은 당신의 것이 아닙니다");
         }
 
@@ -57,8 +57,8 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, String email) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(()->new NotFoundException("comment not found"));
-        if(!comment.getMember().getEmail().equals(email)){
+                .orElseThrow(() -> new NotFoundException("comment not found"));
+        if (!comment.getMember().getEmail().equals(email)) {
             throw new ForbiddenException("이 댓글은 당신의 것이 아닙니다");
         }
 
