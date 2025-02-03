@@ -53,8 +53,7 @@ public class LikeService {
 
     @Transactional(readOnly = true)
     public LikeStatusResponse getLikeStatus(Long postId, String email) {
-        Optional<Like> likeOptional = likeRepository.findByPostIdAndMemberEmail(postId, email);
-        if (likeOptional.isPresent()) {
+        if (likeRepository.existsByPostIdAndMemberEmail(postId, email)) {
             return new LikeStatusResponse(true);
         } else {
             return new LikeStatusResponse(false);
