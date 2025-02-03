@@ -75,7 +75,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<PostSummaryResponse> getAllPostSummariesByTag(int tagId, Pageable pageable) {
-        return postRepository.findPostSummariesBtTagIdPaged(tagId, pageable);
+        return postRepository.findPostSummariesByTagIdPaged(tagId, pageable);
     }
 
     @Transactional(readOnly = true)
