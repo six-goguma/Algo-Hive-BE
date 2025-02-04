@@ -1,6 +1,8 @@
 package com.knu.algo_hive.post.controller;
 
 import com.knu.algo_hive.auth.service.CustomUserDetails;
+import com.knu.algo_hive.common.annotation.ApiErrorCodeExamples;
+import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.PostRequest;
 import com.knu.algo_hive.post.dto.PostResponse;
 import com.knu.algo_hive.post.dto.PostSummaryResponse;
@@ -62,6 +64,7 @@ public class PostController {
     @Operation(summary = "게시물 상세 조회",
             description = "게시물 상세 조회"
     )
+    @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND})
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
     }
@@ -70,6 +73,7 @@ public class PostController {
     @Operation(summary = "게시물 저장",
             description = "게시물 저장"
     )
+    @ApiErrorCodeExamples({ErrorCode.MEMBER_NOT_FOUND})
     public ResponseEntity<Void> savePost(@RequestBody PostRequest request,
                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.savePost(request, userDetails.getUsername());
@@ -80,6 +84,7 @@ public class PostController {
     @Operation(summary = "게시물 수정",
             description = "게시물 수정"
     )
+    @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> updatePost(@PathVariable Long postId,
                                            @RequestBody PostRequest request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -91,6 +96,7 @@ public class PostController {
     @Operation(summary = "게시물 삭제",
             description = "게시물 삭제"
     )
+    @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> deletePost(@PathVariable Long postId,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.deletePost(postId, userDetails.getUsername());
@@ -106,8 +112,7 @@ public class PostController {
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "페이지 크기", example = "10", schema = @Schema(type = "integer", defaultValue = "10")),
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
-    public ResponseEntity<Page<PostSummaryResponse>> getAllPostSummariesByTagId(
-                                                                                @PageableDefault(sort = "createdAt,desc")
+    public ResponseEntity<Page<PostSummaryResponse>> getAllPostSummariesByTagId(@PageableDefault(sort = "createdAt,desc")
                                                                                 @PathVariable int tagId,
                                                                                 Pageable pageable) {
         return ResponseEntity.ok(postService.getAllPostSummariesByTag(tagId, pageable));
@@ -122,8 +127,7 @@ public class PostController {
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "페이지 크기", example = "10", schema = @Schema(type = "integer", defaultValue = "10")),
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
-    public ResponseEntity<Page<PostSummaryResponse>> getPostSummariesByTagIdAndNickname(
-                                                                                        @PageableDefault(sort = "createdAt,desc")
+    public ResponseEntity<Page<PostSummaryResponse>> getPostSummariesByTagIdAndNickname(@PageableDefault(sort = "createdAt,desc")
                                                                                         @PathVariable int tagId,
                                                                                         @PathVariable String nickname,
                                                                                         Pageable pageable

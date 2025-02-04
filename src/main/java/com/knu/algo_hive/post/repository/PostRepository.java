@@ -35,7 +35,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "JOIN p.member m " +
             "JOIN PostTag pt ON pt.post = p " +
             "WHERE pt.tagId = :tagId ")
-    Page<PostSummaryResponse> findPostSummariesBtTagIdPaged(@Param("tagId") int tagId, Pageable pageable);
+    Page<PostSummaryResponse> findPostSummariesByTagIdPaged(@Param("tagId") int tagId, Pageable pageable);
 
     @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
             "FROM Post p " +
