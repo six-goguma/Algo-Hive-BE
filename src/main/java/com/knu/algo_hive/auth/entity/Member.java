@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Entity
 @Getter
 
-public class Member {
+public class Member implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
