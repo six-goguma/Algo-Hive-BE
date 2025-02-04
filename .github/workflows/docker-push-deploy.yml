@@ -40,6 +40,7 @@ jobs:
           SMTP_EMAIL: ${{ secrets.SMTP_EMAIL }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          PROFILE_FILE_PATH: ${{ secrets.PROFILE_FILE_PATH }}
 
       - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -92,4 +93,4 @@ jobs:
           echo "New Pod: $NEW_POD"
           
           echo "Deleting older Pods..."
-          kubectl get pods -l app=knutoyproject --kubeconfig ~/.kube/config --insecure-skip-tls-verify --sort-by=.metadata.creationTimestamp | tail -n +2 | head -n -1 | awk '{print $1}' | xargs kubectl delete pod --kubeconfig ~/.kube/config --insecure-skip-tls-verify
+          kubectl get pods -l app=knutoyproject —kubeconfig ~/.kube/config —insecure-skip-tls-verify —sort-by=.metadata.creationTimestamp | tail -n +2 | head -n -1 | awk '{print $1}' | xargs kubectl delete pod —kubeconfig ~/.kube/config —insecure-skip-tls-verify
