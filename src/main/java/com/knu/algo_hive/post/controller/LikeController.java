@@ -37,7 +37,7 @@ public class LikeController {
     @Operation(summary = "좋아요 상태 변경(좋아요/좋아요 취소)",
             description = "좋아요 상태 변경. api 요청마다 상태가 반전됨. 200 응답시 현 좋아요 상태 반환"
     )
-    @ApiErrorCodeExamples({ErrorCode.CONCURRENCY_CONFLICT, ErrorCode.MEMBER_NOT_FOUND, ErrorCode.POST_NOT_FOUND})
+    @ApiErrorCodeExamples({ErrorCode.CONCURRENCY_CONFLICT, ErrorCode.POST_NOT_FOUND, ErrorCode.MEMBER_NOT_FOUND})
     public ResponseEntity<LikeStatusResponse> changeLikeStatus(@PathVariable Long postId,
                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(likeService.changeLikeStatusWithRetry(postId, userDetails.getUsername()));
