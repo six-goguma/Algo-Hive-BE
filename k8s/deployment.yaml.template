@@ -109,7 +109,7 @@ spec:
             failureThreshold: 3
           volumeMounts:
             - name: nfs-volume
-              mountPath: /usr/share/nginx/html/files
+              mountPath: /usr/share/nginx/html
       volumes:
         - name: nfs-volume
           persistentVolumeClaim:
