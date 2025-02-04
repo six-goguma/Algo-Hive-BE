@@ -88,6 +88,11 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: redis_password
+            - name: PROFILE_FILE_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: profile_file_path
           readinessProbe:
             httpGet:
               path: /actuator/health
