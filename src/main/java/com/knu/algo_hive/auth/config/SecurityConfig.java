@@ -31,7 +31,7 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated()
                           .anyRequest().permitAll())
                 .sessionManagement((session) -> session
-                        .maximumSessions(1)
+                        .maximumSessions(3)
                         .maxSessionsPreventsLogin(true))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
