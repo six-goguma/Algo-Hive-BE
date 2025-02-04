@@ -31,4 +31,8 @@ public class Member {
         this.email = email;
         this.password = password;
     }
+
+    public void putNickName(String nickName){
+        this.nickName = nickName;
+    }
 }
