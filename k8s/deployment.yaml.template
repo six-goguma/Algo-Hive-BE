@@ -48,65 +48,18 @@ spec:
                 secretKeyRef:
                   name: db-secret
                   key: db_password
-            - name: GEMINI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: gemini_api_key
-            - name: RABBITMQ_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: rabbitmq_hostname
-            - name: RABBITMQ_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: rabbitmq_username
-            - name: RABBITMQ_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: rabbitmq_password
-            - name: RABBITMQ_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: rabbitmq_port
-            - name: SMTP_EMAIL
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: smtp_email
-            - name: SMTP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: smtp_password
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: db-secret
-                  key: redis_password
             - name: PROFILE_FILE_PATH
               valueFrom:
                 secretKeyRef:
                   name: db-secret
                   key: profile_file_path
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 40
-            periodSeconds: 10
-            failureThreshold: 3
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 40
-            periodSeconds: 20
-            failureThreshold: 3
+          volumeMounts:
+            - name: nfs-volume
+              mountPath: /usr/share/nginx/html/files
+      volumes:
+        - name: nfs-volume
+          persistentVolumeClaim:
+            claimName: nfs-pvc
   strategy:
     type: RollingUpdate
     rollingUpdate:
