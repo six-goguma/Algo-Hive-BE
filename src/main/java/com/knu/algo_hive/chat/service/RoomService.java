@@ -6,11 +6,10 @@ import com.knu.algo_hive.chat.entity.Room;
 import com.knu.algo_hive.chat.repository.RoomRepository;
 import com.knu.algo_hive.common.exception.ConflictException;
 import com.knu.algo_hive.common.exception.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RoomService {
@@ -31,12 +30,12 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoomResponse> getAllRooms() {
-        return roomRepository.findAll()
-                .stream().map(
+    public Page<RoomResponse> getAllRooms(Pageable pageable) {
+        return roomRepository.findAll(pageable)
+                .map(
                         Room -> new RoomResponse(
                                 Room.getRoomName()
-                        )).collect(Collectors.toList());
+                        ));
     }
 
     @Transactional
