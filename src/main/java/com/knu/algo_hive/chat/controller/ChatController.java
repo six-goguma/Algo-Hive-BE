@@ -19,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/chat")
 @Tag(name = "채팅", description = "채팅방 관련 REST API - 웹소켓 API 제외")
@@ -63,9 +61,17 @@ public class ChatController {
     }
 
     @GetMapping("/messages/{roomName}")
-    @Operation(summary = "채팅 불러오기", description = "채팅방별로 최근 50개의 채팅을 불러옵니다.")
-    public ResponseEntity<List<ChatMessageInfo>> getRecentMessages(@PathVariable("roomName") String roomName) {
-        List<ChatMessageInfo> messageInfos = chatMessageService.getRecentMessages(roomName);
+    @Operation(summary = "채팅 불러오기", description = "채팅방별로 최근 채팅 페이지로 불러옵니다.")
+    @Parameters({
+            @Parameter(in = ParameterIn.QUERY, name = "page", description = "페이지 번호 (0부터 시작)", example = "0", schema = @Schema(type = "integer", defaultValue = "0")),
+            @Parameter(in = ParameterIn.QUERY, name = "size", description = "페이지 크기", example = "10", schema = @Schema(type = "integer", defaultValue = "10")),
+            @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "chatTime,desc", schema = @Schema(type = "string"))
+    })
+    public ResponseEntity<Page<ChatMessageInfo>> getRecentMessages(@PathVariable("roomName") String roomName,
+                                                                   @Parameter(hidden = true)
+                                                                   @PageableDefault(sort = "chatTime,desc")
+                                                                   Pageable pageable) {
+        Page<ChatMessageInfo> messageInfos = chatMessageService.getRecentMessages(roomName, pageable);
         return ResponseEntity.ok().body(messageInfos);
     }
 }
