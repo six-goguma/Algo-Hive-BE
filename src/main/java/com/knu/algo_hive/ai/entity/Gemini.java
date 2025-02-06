@@ -19,14 +19,14 @@ public class Gemini {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 10000)
+    @Lob
+    private String code;
+    @Lob
     private String response;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
-    @Column(length = 3000)
-    private String code;
     @CreatedDate
     @NotNull
     private LocalDateTime createdDateTime;
