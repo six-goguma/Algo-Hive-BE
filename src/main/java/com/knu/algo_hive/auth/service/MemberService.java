@@ -40,7 +40,7 @@ public class MemberService {
     private final MailService mailService;
 
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
-    private final long ACCESS_TEN_MINUTES = 1000 * 60 * 10;
+    private final long ACCESS_FIVE_MINUTES = 1000 * 60 * 5;
 
     @Transactional
     public void register(RegisterRequest registerRequest) {
@@ -103,7 +103,7 @@ public class MemberService {
 
         if (storedCode.equals(code)) {
             redisTemplate.opsForHash().put(email, "verified", true);
-            redisTemplate.expire(email, ACCESS_TEN_MINUTES, TimeUnit.MILLISECONDS);
+            redisTemplate.expire(email, ACCESS_FIVE_MINUTES, TimeUnit.MILLISECONDS);
             return;
         }
 
