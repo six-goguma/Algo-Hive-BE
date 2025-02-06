@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class GeminiResponseEntity {
+public class Gemini {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,20 +25,19 @@ public class GeminiResponseEntity {
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "request_id")
-    private GeminiRequestEntity geminiRequestEntity;
+    @Column(length = 3000)
+    private String code;
     @CreatedDate
     @NotNull
     private LocalDateTime createdDateTime;
 
-    protected GeminiResponseEntity() {
+    protected Gemini() {
 
     }
 
-    public GeminiResponseEntity(String response, GeminiRequestEntity geminiRequestEntity, Member member) {
+    public Gemini(String response, String code, Member member) {
         this.response = response;
-        this.geminiRequestEntity = geminiRequestEntity;
+        this.code = code;
         this.member = member;
     }
 

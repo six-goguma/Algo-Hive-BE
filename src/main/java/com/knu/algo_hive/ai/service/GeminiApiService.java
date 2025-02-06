@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knu.algo_hive.ai.dto.AiReportResponse;
 import com.knu.algo_hive.ai.dto.GeminiApiRequest;
 import com.knu.algo_hive.ai.dto.GeminiApiResponse;
-import com.knu.algo_hive.ai.entity.GeminiRequestEntity;
-import com.knu.algo_hive.ai.entity.GeminiResponseEntity;
-import com.knu.algo_hive.ai.repository.GeminiRequestRepository;
-import com.knu.algo_hive.ai.repository.GeminiResponseRepository;
+import com.knu.algo_hive.ai.entity.Gemini;
+import com.knu.algo_hive.ai.repository.GeminiRepository;
 import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.repository.MemberRepository;
 import com.knu.algo_hive.common.exception.NotFoundException;
@@ -31,19 +29,16 @@ public class GeminiApiService {
             "이 문제는 백준 사이트에서 가져온 문제이므로, 가능하다면 해당 문제에 대한 간략한 설명도 포함해주세요. " +
             "최종적으로 풀이 코드를 함께 첨부합니다. 코드: ";
     private final RestTemplate restTemplate;
-    private final GeminiRequestRepository requestRepository;
-    private final GeminiResponseRepository responseRepository;
+    private final GeminiRepository responseRepository;
     private final MemberRepository memberRepository;
 
     @Value("${gemini.api.key}")
     private String apiKey;
 
     public GeminiApiService(RestTemplate restTemplate,
-                            GeminiRequestRepository requestRepository,
-                            GeminiResponseRepository responseRepository,
+                            GeminiRepository responseRepository,
                             MemberRepository memberRepository) {
         this.restTemplate = restTemplate;
-        this.requestRepository = requestRepository;
         this.responseRepository = responseRepository;
         this.memberRepository = memberRepository;
     }
@@ -52,9 +47,6 @@ public class GeminiApiService {
     public GeminiApiResponse analyzeCode(GeminiApiRequest geminiApiRequest, String memberEmail) throws Exception {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new NotFoundException("해당하는 멤버가 없습니다."));
-
-        GeminiRequestEntity geminiRequestEntity = new GeminiRequestEntity(geminiApiRequest.code(), member);
-        requestRepository.save(geminiRequestEntity);
 
         String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
 
@@ -73,9 +65,9 @@ public class GeminiApiService {
 
         GeminiApiResponse geminiApiResponse = objectMapper.readValue(response.getBody(), GeminiApiResponse.class);
 
-        GeminiResponseEntity geminiResponseEntity = new GeminiResponseEntity(geminiApiResponse.getCandidates().getFirst().getContent()
-                .getParts().getFirst().getText(), geminiRequestEntity, member);
-        responseRepository.save(geminiResponseEntity);
+        Gemini gemini = new Gemini(geminiApiResponse.getCandidates().getFirst().getContent()
+                .getParts().getFirst().getText(), geminiApiRequest.code(), member);
+        responseRepository.save(gemini);
 
         return geminiApiResponse;
     }
@@ -85,12 +77,12 @@ public class GeminiApiService {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new NotFoundException("해당하는 멤버가 없습니다."));
 
-        Page<GeminiResponseEntity> geminiResponseEntities = responseRepository.findAllByMember(member, pageable);
+        Page<Gemini> geminiResponseEntities = responseRepository.findAllByMember(member, pageable);
         return geminiResponseEntities.map(
                 response -> new AiReportResponse(
                         response.getId(),
                         response.getCreatedDateTime(),
-                        response.getGeminiRequestEntity().getCode(),
+                        response.getCode(),
                         response.getResponse()
                 ));
     }
@@ -100,14 +92,14 @@ public class GeminiApiService {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new NotFoundException("해당하는 멤버가 없습니다."));
 
-        GeminiResponseEntity geminiResponseEntity = responseRepository.findById(aiReportId)
+        Gemini gemini = responseRepository.findById(aiReportId)
                 .orElseThrow(() -> new NotFoundException("해당하는 AI 리포트가 없습니다."));
 
-        if (geminiResponseEntity.checkMemberIsNot(member)) {
+        if (gemini.checkMemberIsNot(member)) {
             throw new UnauthorizedException("AI 리포트를 읽을 권한이 없습니다.");
         }
 
-        return new AiReportResponse(geminiResponseEntity.getId(), geminiResponseEntity.getCreatedDateTime(), geminiResponseEntity.getGeminiRequestEntity().getCode(), geminiResponseEntity.getResponse());
+        return new AiReportResponse(gemini.getId(), gemini.getCreatedDateTime(), gemini.getCode(), gemini.getResponse());
     }
 
     @Transactional
@@ -115,13 +107,13 @@ public class GeminiApiService {
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new NotFoundException("해당하는 멤버가 없습니다."));
 
-        GeminiResponseEntity geminiResponseEntity = responseRepository.findById(aiReportId)
+        Gemini gemini = responseRepository.findById(aiReportId)
                 .orElseThrow(() -> new NotFoundException("해당하는 AI 리포트가 없습니다."));
 
-        if (geminiResponseEntity.checkMemberIsNot(member)) {
+        if (gemini.checkMemberIsNot(member)) {
             throw new UnauthorizedException("AI 리포트를 삭제할 권한이 없습니다.");
         }
 
-        responseRepository.delete(geminiResponseEntity);
+        responseRepository.delete(gemini);
     }
 }
