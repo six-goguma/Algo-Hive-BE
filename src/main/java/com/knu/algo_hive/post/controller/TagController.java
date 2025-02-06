@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "게시물_태그", description = "게시물의 태그 관련 API")
+@Tag(name = "게시글_태그", description = "게시글의 태그 관련 API")
 public class TagController {
 
     private final TagService tagService;
@@ -23,15 +23,15 @@ public class TagController {
     }
 
     @GetMapping("/api/v1/posts/{postId}/tags")
-    @Operation(summary = "게시물 태그 조회",
-            description = "게시물 태그 조회"
+    @Operation(summary = "게시글 태그 조회",
+            description = "게시글 태그 조회"
     )
     public ResponseEntity<TagResponse> getTags(@PathVariable Long postId) {
         return ResponseEntity.ok(tagService.getTags(postId));
     }
 
     @PostMapping("/api/v1/posts/{postId}/tags")
-    @Operation(summary = "게시물 태그 저장",
+    @Operation(summary = "게시글 태그 저장",
             description = "태그 저장"
     )
     @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
@@ -43,7 +43,7 @@ public class TagController {
     }
 
     @PutMapping("/api/v1/posts/{postId}/tags")
-    @Operation(summary = "게시물 태그 수정",
+    @Operation(summary = "게시글 태그 수정",
             description = "태그 수정"
     )
     @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})

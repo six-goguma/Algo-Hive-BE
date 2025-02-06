@@ -7,7 +7,7 @@ public record PostRequest(
         @NotBlank
         String title,
         @NotNull
-        String content,
+        String contents,
         @NotNull
         String thumbnail,
         @NotNull

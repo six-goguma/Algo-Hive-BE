@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "게시물_좋아요", description = "게시물의 좋아요 관련 API")
+@Tag(name = "게시글_좋아요", description = "게시글의 좋아요 관련 API")
 public class LikeController {
 
     private final LikeService likeService;
