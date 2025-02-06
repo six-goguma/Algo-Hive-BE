@@ -1,14 +1,13 @@
 package com.knu.algo_hive.ai.entity;
 
+import com.knu.algo_hive.auth.entity.Member;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
+import lombok.Getter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@Getter
 public class GeminiRequestEntity {
 
     @Id
@@ -16,15 +15,17 @@ public class GeminiRequestEntity {
     private Long id;
     @Column(length = 3000)
     private String code;
-    @CreatedDate
-    @NotNull
-    private LocalDateTime createdDateTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Member member;
 
     protected GeminiRequestEntity() {
 
     }
 
-    public GeminiRequestEntity(String code) {
+    public GeminiRequestEntity(String code, Member member) {
         this.code = code;
+        this.member = member;
     }
 }
