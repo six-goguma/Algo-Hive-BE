@@ -45,13 +45,8 @@ public class UserStatusConsumer {
         Map<String, Integer> roomUserCounts = connectedUsers.stream()
                 .collect(Collectors.groupingBy(UsersResponse::roomName, Collectors.reducing(0, e -> 1, Integer::sum)));
 
-        roomUserCounts.forEach((room, count) -> {
-            if (count > 0) {
-                redisTemplate.opsForHash().put(REDIS_ROOM_COUNT_KEY, room, count);
-            } else {
-                redisTemplate.opsForHash().delete(REDIS_ROOM_COUNT_KEY, room);
-            }
-        });
+        redisTemplate.delete(REDIS_ROOM_COUNT_KEY);
+        redisTemplate.opsForHash().putAll(REDIS_ROOM_COUNT_KEY, roomUserCounts);
 
         messagingTemplate.convertAndSend("/topic/users", connectedUsers);
         messagingTemplate.convertAndSend("/topic/room-users", roomUserCounts);
