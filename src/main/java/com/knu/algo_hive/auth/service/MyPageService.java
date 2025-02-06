@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +34,13 @@ public class MyPageService {
     private String uploadFolder;
     @Value("${image.url}")
     private String imageUrl;
+
+    private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(
+            "image/jpeg",
+            "image/png",
+            "image/gif"
+    );
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     private final ProfileRepository profileRepository;
     private final MemberRepository memberRepository;
@@ -58,8 +67,13 @@ public class MyPageService {
     }
 
     @Transactional
-    public void postProfile(Member member, ProfileRequest profileRequest){
+    public ProfileResponse postProfile(Member member, ProfileRequest profileRequest){
         MultipartFile file = profileRequest.file();
+        if(file.isEmpty()) throw new ConflictException(ErrorCode.IMAGE_NOT_UPLOADED);
+        if(file.getSize() > MAX_FILE_SIZE) throw new ConflictException(ErrorCode.FILE_SIZE_EXCEEDED);
+
+        String mimeType = file.getContentType();
+        if (!ALLOWED_MIME_TYPES.contains(mimeType)) throw new ConflictException(ErrorCode.INVALID_FILE_TYPE);
 
         UUID uuid = UUID.randomUUID();
         String imageFileName = uuid + "_" + file.getOriginalFilename();
@@ -73,6 +87,7 @@ public class MyPageService {
             profile.updateUrl(imageFileName);
 
             profileRepository.save(profile);
+            return new ProfileResponse(imageUrl + profile.getUrl());
         } catch (IOException e) {
             throw new ConflictException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
