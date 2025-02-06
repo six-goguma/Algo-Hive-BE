@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class ChatController {
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
     public ResponseEntity<Page<RoomResponse>> getAllRooms(@Parameter(hidden = true)
-                                                          @PageableDefault(sort = "createdAt,desc")
+                                                          @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC)
                                                           Pageable pageable) {
         Page<RoomResponse> roomResponses = roomService.getAllRooms(pageable);
         return ResponseEntity.ok().body(roomResponses);
@@ -69,7 +70,7 @@ public class ChatController {
     })
     public ResponseEntity<Page<ChatMessageInfo>> getRecentMessages(@PathVariable("roomName") String roomName,
                                                                    @Parameter(hidden = true)
-                                                                   @PageableDefault(sort = "chatTime,desc")
+                                                                   @PageableDefault(sort = "chatTime", direction = Sort.Direction.DESC)
                                                                    Pageable pageable) {
         Page<ChatMessageInfo> messageInfos = chatMessageService.getRecentMessages(roomName, pageable);
         return ResponseEntity.ok().body(messageInfos);
