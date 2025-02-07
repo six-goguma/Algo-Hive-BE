@@ -37,8 +37,7 @@ public class MyPageService {
 
     private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(
             "image/jpeg",
-            "image/png",
-            "image/gif"
+            "image/png"
     );
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
