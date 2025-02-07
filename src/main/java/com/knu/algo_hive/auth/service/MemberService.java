@@ -91,15 +91,13 @@ public class MemberService {
     @Async("taskExecutor")
     public void postCode(String email) throws MessagingException {
         checkEmail(email);
+        Random random = new Random();
+        String code = String.format("%04d", random.nextInt(10000));
 
+        mailService.sendMail(email, code);
         RLock lock = redissonClient.getLock("email:" + email);
         try {
             if (lock.tryLock(5, 3, TimeUnit.SECONDS)) {
-                Random random = new Random();
-                String code = String.format("%04d", random.nextInt(10000));
-
-                mailService.sendMail(email, code);
-
                 redisTemplate.opsForHash().put(email, "code", code);
                 redisTemplate.opsForHash().put(email, "verified", false);
 
