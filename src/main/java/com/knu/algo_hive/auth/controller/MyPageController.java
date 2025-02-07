@@ -1,6 +1,6 @@
 package com.knu.algo_hive.auth.controller;
 
-import com.knu.algo_hive.auth.dto.NickNameRequest;
+import com.knu.algo_hive.auth.dto.NicknameRequest;
 import com.knu.algo_hive.auth.dto.ProfileRequest;
 import com.knu.algo_hive.auth.dto.ProfileResponse;
 import com.knu.algo_hive.auth.service.CustomUserDetails;
@@ -60,8 +60,8 @@ public class MyPageController {
     @ApiErrorCodeExamples({ErrorCode.DUPLICATE_NICK_NAME, ErrorCode.UNAUTHORIZED})
     @PutMapping("/nick-name")
     public ResponseEntity<?> putNickName(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                         @RequestBody NickNameRequest nickNameRequest){
-        myPageService.putNickName(userDetails.getMember(), nickNameRequest);
+                                         @RequestBody NicknameRequest nicknameRequest){
+        myPageService.putNickName(userDetails.getMember(), nicknameRequest);
 
         return ResponseEntity.ok(ErrorCode.OK.getMessage());
     }
@@ -81,7 +81,7 @@ public class MyPageController {
     @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         myPageService.logout(request, response);
-        return ResponseEntity.ok(ErrorCode.OK);
+        return ResponseEntity.ok(ErrorCode.OK.getMessage());
     }
 
 }

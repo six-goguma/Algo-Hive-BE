@@ -16,7 +16,7 @@ public class Member implements Serializable {
 
     @NotNull
     @Column(unique = true)
-    private String nickName;
+    private String nickname;
 
     @NotNull
     @Column(unique = true)
@@ -28,13 +28,13 @@ public class Member implements Serializable {
     public Member() {
     }
 
-    public Member(String nickName, String email, String password) {
-        this.nickName = nickName;
+    public Member(String nickname, String email, String password) {
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
     }
 
-    public void putNickName(String nickName){
-        this.nickName = nickName;
+    public void putNickname(String nickname){
+        this.nickname = nickname;
     }
 }
