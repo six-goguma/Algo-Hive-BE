@@ -20,7 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "게시물_댓글", description = "게시물의 댓글 관련 API")
+@Tag(name = "게시글_댓글", description = "게시글의 댓글 관련 API")
 public class CommentController {
 
     private final CommentService commentService;
@@ -30,7 +30,7 @@ public class CommentController {
     }
 
     @GetMapping("/api/v1/posts/{postId}/comments")
-    @Operation(summary = "특정 게시물의 댓글 페이지네이션 조회")
+    @Operation(summary = "특정 게시글의 댓글 페이지네이션 조회")
     @Parameters({
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "페이지 번호 (0부터 시작)", example = "0", schema = @Schema(type = "integer", defaultValue = "0")),
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "페이지 크기", example = "10", schema = @Schema(type = "integer", defaultValue = "10")),
