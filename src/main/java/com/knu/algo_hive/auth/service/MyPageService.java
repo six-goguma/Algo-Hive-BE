@@ -1,6 +1,6 @@
 package com.knu.algo_hive.auth.service;
 
-import com.knu.algo_hive.auth.dto.NickNameRequest;
+import com.knu.algo_hive.auth.dto.NicknameRequest;
 import com.knu.algo_hive.auth.dto.ProfileRequest;
 import com.knu.algo_hive.auth.dto.ProfileResponse;
 import com.knu.algo_hive.auth.entity.Member;
@@ -58,11 +58,11 @@ public class MyPageService {
     }
 
     @Transactional
-    public void putNickName(Member member, NickNameRequest nickNameRequest){
-        if(memberRepository.existsByNickName(nickNameRequest.nickName()))
+    public void putNickName(Member member, NicknameRequest nickNameRequest){
+        if(memberRepository.existsByNickname(nickNameRequest.nickname()))
             throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
 
-        member.putNickName(nickNameRequest.nickName());
+        member.putNickname(nickNameRequest.nickname());
         memberRepository.save(member);
     }
 
