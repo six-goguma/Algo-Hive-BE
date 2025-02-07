@@ -46,40 +46,46 @@ public class MailService {
 
     public String buildVerificationEmail(String code) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<!doctype html>");
+        sb.append("<!DOCTYPE html>");
         sb.append("<html>");
         sb.append("<head>");
-        sb.append("<meta charset=\"utf-8\" />");
-        sb.append("<style>");
-        sb.append(".element { width: 250px; height: auto;}");
-        sb.append("* { -webkit-font-smoothing: antialiased; box-sizing: border-box; margin: 0; padding: 0; }");
-        sb.append("body { margin: 0; padding: 0; width: 100%; text-align: center; background-color: #f9f9f9; font-family: 'Pretendard-Regular', Arial, sans-serif; }");
-        sb.append("table { border-spacing: 0; margin: 0 auto; }");
-        sb.append(".email-container { max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; }");
-        sb.append(".header { background-color: #0076BF; padding: 20px; color: white; text-align: center; font-size: 24px; font-weight: bold; }");
-        sb.append(".content { padding: 30px; text-align: left; font-size: 16px; color: #333333; }");
-        sb.append(".code { display: block; margin: 20px 0; font-size: 28px; font-weight: bold; text-align: center; color: #555555; }");
-        sb.append(".footer { text-align: center; font-size: 12px; color: #888888; padding: 20px; }");
-        sb.append("</style>");
+        sb.append("<meta charset=\"utf-8\">");
         sb.append("</head>");
-        sb.append("<body>");
-        sb.append("<table role=\"presentation\" class=\"email-container\">");
-        sb.append("<td style=\"text-align: center; padding: 20px;\">");
-        sb.append("<img class=\"element\" src=\"https://velog.velcdn.com/images/2iedo/post/b8d1a533-9531-429e-81e8-9b4733c78996/image.png\" />");
-        sb.append("</td>");
+        sb.append("<body style=\"margin: 0; padding: 0; width: 100%; text-align: center; background-color: #f9f9f9; font-family: Arial, sans-serif;\">");
+        sb.append("<table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background-color: #f9f9f9;\">");
         sb.append("<tr>");
-        sb.append("<td class=\"header\">본인확인 인증 코드</td>");
-        sb.append("</tr>");
+        sb.append("<td align=\"center\">");
+        sb.append("<table role=\"presentation\" width=\"600\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"background-color: #ffffff; border-radius: 8px;\">");
+
+        // 로고 이미지
         sb.append("<tr>");
-        sb.append("<td class=\"content\">");
-        sb.append("<p>안녕하세요,</p>");
-        sb.append("<p>본인 확인을 위해 아래 인증 코드를 입력해주세요:</p>");
-        sb.append("<span class=\"code\">").append(code).append("</span>");
-        sb.append("<p>인증 코드는 <strong>3분</strong> 동안만 유효합니다.</p>");
+        sb.append("<td align=\"center\" style=\"padding: 20px;\">");
+        sb.append("<img src=\"https://velog.velcdn.com/images/2iedo/post/b8d1a533-9531-429e-81e8-9b4733c78996/image.png\" width=\"250\" style=\"display: block;\">");
         sb.append("</td>");
         sb.append("</tr>");
+
+        // 제목
         sb.append("<tr>");
-        sb.append("<td class=\"footer\">이 이메일은 자동으로 발송되었습니다. 문의가 필요하시면 "+ senderEmail +"으로 연락해주세요.</td>");
+        sb.append("<td align=\"center\" style=\"background-color: #0076BF; padding: 20px; color: white; font-size: 24px; font-weight: bold;\">본인확인 인증 코드</td>");
+        sb.append("</tr>");
+
+        // 본문 내용
+        sb.append("<tr>");
+        sb.append("<td style=\"padding: 30px; text-align: left; font-size: 16px; color: #333333;\">");
+        sb.append("<p style=\"margin: 0 0 10px 0;\">안녕하세요,</p>");
+        sb.append("<p style=\"margin: 0 0 10px 0;\">본인 확인을 위해 아래 인증 코드를 입력해주세요:</p>");
+        sb.append("<p style=\"display: block; font-size: 28px; font-weight: bold; text-align: center; color: #555555; background: #f1f1f1; padding: 15px; border-radius: 4px;\">").append(code).append("</p>");
+        sb.append("<p style=\"margin: 20px 0 0 0;\">인증 코드는 <strong>3분</strong> 동안만 유효합니다.</p>");
+        sb.append("</td>");
+        sb.append("</tr>");
+
+        // 푸터
+        sb.append("<tr>");
+        sb.append("<td align=\"center\" style=\"font-size: 12px; color: #888888; padding: 20px;\">이 이메일은 자동으로 발송되었습니다. 문의가 필요하시면 ").append(senderEmail).append(" 으로 연락해주세요.</td>");
+        sb.append("</tr>");
+
+        sb.append("</table>");
+        sb.append("</td>");
         sb.append("</tr>");
         sb.append("</table>");
         sb.append("</body>");
@@ -87,5 +93,6 @@ public class MailService {
 
         return sb.toString();
     }
+
 
 }
