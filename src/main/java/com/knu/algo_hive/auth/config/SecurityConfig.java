@@ -26,10 +26,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-//                        .requestMatchers("/api/v1/auth/**").permitAll()
-//                        .requestMatchers("/swagger-ui/**").permitAll()
-//                        .anyRequest().authenticated()
-                          .anyRequest().permitAll())
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .anyRequest().authenticated())
+//                          .anyRequest().permitAll())
                 .sessionManagement((session) -> session
                         .maximumSessions(3)
                         .maxSessionsPreventsLogin(true))

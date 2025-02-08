@@ -72,9 +72,9 @@ public class AuthRestController {
             description = "닉네임이 다른 사용자와 중복되는지 확인한다.",
             security = @SecurityRequirement(name = "Session 제외"))
     @ApiErrorCodeExamples({ErrorCode.OK,ErrorCode.DUPLICATE_NICK_NAME})
-    @PostMapping("/nick-name")
-    public ResponseEntity<?> checkNickName(@RequestBody NickNameRequest nickNameRequest) {
-        memberService.checkNickName(nickNameRequest.nickName());
+    @PostMapping("/nickname")
+    public ResponseEntity<?> checkNickName(@RequestBody NicknameRequest nickNameRequest) {
+        memberService.checkNickName(nickNameRequest.nickname());
 
         return ResponseEntity.ok(ErrorCode.OK.getMessage());
     }

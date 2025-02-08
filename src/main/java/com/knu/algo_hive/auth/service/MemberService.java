@@ -13,7 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,19 +41,20 @@ public class MemberService {
     private final HttpSessionSecurityContextRepository securityContextRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final MailService mailService;
+    private final RedissonClient redissonClient;
 
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
-    private final long ACCESS_TEN_MINUTES = 1000 * 60 * 10;
+    private final long ACCESS_FIVE_MINUTES = 1000 * 60 * 5;
 
     @Transactional
     public void register(RegisterRequest registerRequest) {
         checkEmail(registerRequest.email());
-        checkNickName(registerRequest.nickName());
+        checkNickName(registerRequest.nickname());
 
         if (!Boolean.parseBoolean((String) redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
             throw new BadRequestException(ErrorCode.NOT_VERIFY_EMAIL);
 
-        Member member = new Member(registerRequest.nickName(),
+        Member member = new Member(registerRequest.nickname(),
                 registerRequest.email(),
                 passwordEncoder.encode(registerRequest.password()));
 
@@ -71,7 +75,7 @@ public class MemberService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Member member = userDetails.getMember();
 
-        return new LoginResponse(member.getNickName());
+        return new LoginResponse(member.getNickname());
     }
 
     @Transactional(readOnly = true)
@@ -81,20 +85,31 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkNickName(String nickname) {
-        if (memberRepository.existsByNickName(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
+        if (memberRepository.existsByNickname(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
+    @Async("taskExecutor")
     public void postCode(String email) throws MessagingException {
         checkEmail(email);
         Random random = new Random();
         String code = String.format("%04d", random.nextInt(10000));
 
         mailService.sendMail(email, code);
+        RLock lock = redissonClient.getLock("email:" + email);
+        try {
+            if (lock.tryLock(5, 3, TimeUnit.SECONDS)) {
+                redisTemplate.opsForHash().put(email, "code", code);
+                redisTemplate.opsForHash().put(email, "verified", false);
 
-        redisTemplate.opsForHash().put(email, "code", code);
-        redisTemplate.opsForHash().put(email, "verified", false);
-
-        redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
+                redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
+            }
+        } catch (InterruptedException e) {
+            throw new BadRequestException(ErrorCode.LOCK_ERROR);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     public void verifyCode(String email, String code) {
@@ -103,7 +118,7 @@ public class MemberService {
 
         if (storedCode.equals(code)) {
             redisTemplate.opsForHash().put(email, "verified", true);
-            redisTemplate.expire(email, ACCESS_TEN_MINUTES, TimeUnit.MILLISECONDS);
+            redisTemplate.expire(email, ACCESS_FIVE_MINUTES, TimeUnit.MILLISECONDS);
             return;
         }
 

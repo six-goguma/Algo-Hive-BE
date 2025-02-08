@@ -13,15 +13,15 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id,p.title,p.thumbnail,p.summary,p.createdAt,p.likeCount,p.commentCount,m.nickName) " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id,p.title,p.thumbnail,p.summary,p.createdAt,p.likeCount,p.commentCount,m.nickname) " +
             "FROM Post p " +
             "JOIN p.member m ")
     Page<PostSummaryResponse> findPostSummariesPaged(Pageable pageable);
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickname) " +
             "FROM Post p " +
             "JOIN p.member m " +
-            "WHERE m.nickName = :nickname")
+            "WHERE m.nickname = :nickname")
     Page<PostSummaryResponse> findPostSummariesByAuthorPaged(Pageable pageable, @Param("nickname") String nickname);
 
     @Query("SELECT p " +
@@ -30,17 +30,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE p.id = :postId  ")
     Optional<Post> findByPostId(@Param("postId") Long postId);
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickname) " +
             "FROM Post p " +
             "JOIN p.member m " +
             "JOIN PostTag pt ON pt.post = p " +
             "WHERE pt.tagId = :tagId ")
     Page<PostSummaryResponse> findPostSummariesByTagIdPaged(@Param("tagId") int tagId, Pageable pageable);
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickname) " +
             "FROM Post p " +
             "JOIN p.member m " +
             "JOIN PostTag pt ON pt.post = p " +
-            "WHERE pt.tagId = :tagId AND m.nickName = :nickname ")
+            "WHERE pt.tagId = :tagId AND m.nickname = :nickname ")
     Page<PostSummaryResponse> findPostSummariesBtTagIdAndNickname(@Param("tagId") int tagId, @Param("nickname") String nickname, Pageable pageable);
 }
