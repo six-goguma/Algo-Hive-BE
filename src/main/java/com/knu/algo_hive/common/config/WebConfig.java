@@ -12,8 +12,6 @@ public class WebConfig implements WebMvcConfigurer {
     String uploadPath;
     @Value("${image.url}")
     String imageUrl;
-    @Value("${post.image.url}")
-    private String postImageUrl;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -27,9 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler(imageUrl + "**")
-                .addResourceLocations("file://" + uploadPath);
-
-        registry.addResourceHandler(postImageUrl + "**")
                 .addResourceLocations("file://" + uploadPath);
     }
 }
