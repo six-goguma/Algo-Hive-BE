@@ -8,6 +8,7 @@ import com.knu.algo_hive.common.exception.NotFoundException;
 import com.knu.algo_hive.post.dto.PostRequest;
 import com.knu.algo_hive.post.dto.PostResponse;
 import com.knu.algo_hive.post.dto.PostSummaryResponse;
+import com.knu.algo_hive.post.dto.PostUpdateRequest;
 import com.knu.algo_hive.post.entity.Post;
 import com.knu.algo_hive.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
@@ -52,7 +53,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, PostRequest request, String email) {
+    public void updatePost(Long postId, PostUpdateRequest request, String email) {
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
