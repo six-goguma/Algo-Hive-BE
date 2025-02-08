@@ -35,7 +35,8 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "멤버을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다."),
     NOT_YOUR_RESOURCE(HttpStatus.FORBIDDEN, "요청한 회원의 리소스가 아닙니다."),
-    CONCURRENCY_CONFLICT(HttpStatus.CONFLICT, "좋아요 수정 요청이 충돌 하였습니다. 다시 시도 부탁드립니다.");
+    CONCURRENCY_CONFLICT(HttpStatus.CONFLICT, "좋아요 수정 요청이 충돌 하였습니다. 다시 시도 부탁드립니다."),
+    INVALID_PATH_FORMAT(HttpStatus.BAD_REQUEST, "지원하는 URL path 형식이 아닙니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
