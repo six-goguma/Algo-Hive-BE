@@ -88,7 +88,7 @@ public class MemberService {
         if (memberRepository.existsByNickname(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
-    @Async("taskExecutor")
+    @Async()
     public void postCode(String email) throws MessagingException {
         checkEmail(email);
         Random random = new Random();
