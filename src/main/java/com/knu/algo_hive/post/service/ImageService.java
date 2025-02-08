@@ -55,4 +55,23 @@ public class ImageService {
         File targetFile = new File(uploadFolder + email + "/" + storageId + "/" + filename);
         if (!targetFile.delete()) throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
     }
+
+    public void deleteAllImagesInStorageId(String email, String storageId) {
+        Path directoryPath = Paths.get(uploadFolder + email + "/" + storageId);
+
+        if (!Files.exists(directoryPath)) {
+            return;
+        }
+
+        File directory = directoryPath.toFile();
+        File[] images = directory.listFiles();
+        if (images != null) {
+            for (File image : images) {
+                if (!image.delete()) {
+                    throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
+                }
+            }
+        }
+        if (!directory.delete()) throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
+    }
 }
