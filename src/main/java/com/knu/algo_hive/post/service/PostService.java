@@ -49,7 +49,7 @@ public class PostService {
     public void savePost(PostRequest request, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        postRepository.save(new Post(request.content(), request.summary(), request.thumbnail(), request.title(), member));
+        postRepository.save(new Post(request.contents(), request.summary(), request.thumbnail(), request.title(), member));
     }
 
     @Transactional
@@ -60,7 +60,7 @@ public class PostService {
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
 
         post.setTitle(request.title());
-        post.setContent(request.content());
+        post.setContent(request.contents());
         post.setThumbnail(request.thumbnail());
         post.setSummary(request.summary());
     }

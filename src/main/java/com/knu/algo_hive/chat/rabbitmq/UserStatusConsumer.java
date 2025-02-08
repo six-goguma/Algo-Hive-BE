@@ -30,18 +30,11 @@ public class UserStatusConsumer {
     @RabbitListener(queues = USER_QUEUE_NAME, concurrency = "5-10")
     public void receiveUserStatus(@Payload UserInRoomResponse userInRoomResponse) {
         UsersResponse user = new UsersResponse(userInRoomResponse.userName(), userInRoomResponse.roomName());
-        String roomName = userInRoomResponse.roomName();
 
         if (userInRoomResponse.isJoin()) {
             redisTemplate.opsForSet().add(REDIS_USER_KEY, user);
-            redisTemplate.opsForHash().increment(REDIS_ROOM_COUNT_KEY, roomName, 1);
         } else {
             redisTemplate.opsForSet().remove(REDIS_USER_KEY, user);
-            Long count = redisTemplate.opsForHash().increment(REDIS_ROOM_COUNT_KEY, roomName, -1);
-
-            if (count <= 0) {
-                redisTemplate.opsForHash().delete(REDIS_ROOM_COUNT_KEY, roomName);
-            }
         }
 
         Set<Object> rawUsers = redisTemplate.opsForSet().members(REDIS_USER_KEY);
@@ -49,16 +42,13 @@ public class UserStatusConsumer {
                 .map(obj -> (UsersResponse) obj)
                 .collect(Collectors.toSet());
 
-        Set<Object> roomNames = redisTemplate.opsForHash().keys(REDIS_ROOM_COUNT_KEY);
-        Map<String, Integer> roomUserCounts = roomNames.stream()
-                .collect(Collectors.toMap(
-                        room -> (String) room,
-                        room -> Integer.valueOf(redisTemplate.opsForHash().get(REDIS_ROOM_COUNT_KEY, room).toString())
-                ));
+        Map<String, Integer> roomUserCounts = connectedUsers.stream()
+                .collect(Collectors.groupingBy(UsersResponse::roomName, Collectors.reducing(0, e -> 1, Integer::sum)));
+
+        redisTemplate.delete(REDIS_ROOM_COUNT_KEY);
+        redisTemplate.opsForHash().putAll(REDIS_ROOM_COUNT_KEY, roomUserCounts);
 
         messagingTemplate.convertAndSend("/topic/users", connectedUsers);
-
         messagingTemplate.convertAndSend("/topic/room-users", roomUserCounts);
     }
 }
-

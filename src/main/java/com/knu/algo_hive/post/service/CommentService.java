@@ -41,7 +41,7 @@ public class CommentService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        commentRepository.save(new Comment(request.content(), member, post));
+        commentRepository.save(new Comment(request.contents(), member, post));
     }
 
     @Transactional
@@ -52,7 +52,7 @@ public class CommentService {
             throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
         }
 
-        comment.updateContent(request.content());
+        comment.updateContent(request.contents());
     }
 
     @Transactional

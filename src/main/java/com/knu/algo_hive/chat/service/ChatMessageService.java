@@ -7,11 +7,10 @@ import com.knu.algo_hive.chat.entity.Room;
 import com.knu.algo_hive.chat.repository.ChatMessageRepository;
 import com.knu.algo_hive.chat.repository.RoomRepository;
 import com.knu.algo_hive.common.exception.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ChatMessageService {
@@ -30,20 +29,27 @@ public class ChatMessageService {
         Room room = roomRepository.findByRoomName(roomName)
                 .orElseThrow(() -> new NotFoundException("해당 roomName은 존재하지 않습니다."));
 
-        chatMessageRepository.save(new ChatMessage(chatMessageRequest.sender(), chatMessageRequest.content(), room));
+        chatMessageRepository.save(new ChatMessage(chatMessageRequest.sender(), chatMessageRequest.email(), chatMessageRequest.content(), room));
 
-        return new ChatMessageInfo(chatMessageRequest.sender(), chatMessageRequest.content(), roomName);
+        return new ChatMessageInfo(chatMessageRequest.sender(), chatMessageRequest.email(), chatMessageRequest.content(), roomName);
     }
 
     @Transactional
-    public List<ChatMessageInfo> getRecentMessages(String roomName) {
+    public Page<ChatMessageInfo> getRecentMessages(String roomName, Pageable pageable) {
         Room room = roomRepository.findByRoomName(roomName)
                 .orElseThrow(() -> new NotFoundException("roomName에 해당하는 방이 없습니다."));
-        return chatMessageRepository.findTop50ByRoomOrderByChatTimeDesc(room).stream()
-                .map(ChatMessage -> new ChatMessageInfo(
-                        ChatMessage.getUsername(),
-                        ChatMessage.getContent(),
-                        ChatMessage.getRoom().getRoomName()
-                )).collect(Collectors.toList());
+
+        Page<ChatMessage> chatMessages = chatMessageRepository.findByRoomOrderByChatTimeDesc(room, pageable);
+        return chatMessages.map(chatMessage -> new ChatMessageInfo(
+                chatMessage.getUsername(),
+                chatMessage.getUserEmail(),
+                chatMessage.getContent(),
+                chatMessage.getRoom().getRoomName()
+        ));
+    }
+
+    @Transactional
+    public void changeChatNickname(String email, String nickname) {
+        chatMessageRepository.updateUsernameByUserEmail(email, nickname);
     }
 }

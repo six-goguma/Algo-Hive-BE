@@ -7,6 +7,7 @@ import com.knu.algo_hive.auth.entity.Member;
 import com.knu.algo_hive.auth.entity.Profile;
 import com.knu.algo_hive.auth.repository.MemberRepository;
 import com.knu.algo_hive.auth.repository.ProfileRepository;
+import com.knu.algo_hive.chat.service.ChatMessageService;
 import com.knu.algo_hive.common.exception.BadRequestException;
 import com.knu.algo_hive.common.exception.ConflictException;
 import com.knu.algo_hive.common.exception.ErrorCode;
@@ -45,15 +46,18 @@ public class MyPageService {
     private final MemberRepository memberRepository;
     private final SecurityContextHolderStrategy securityContextHolderStrategy;
     private final HttpSessionSecurityContextRepository securityContextRepository;
+    private final ChatMessageService chatMessageService;
 
     public MyPageService(ProfileRepository profileRepository,
                          MemberRepository memberRepository,
                          SecurityContextHolderStrategy securityContextHolderStrategy,
-                         HttpSessionSecurityContextRepository securityContextRepository){
+                         HttpSessionSecurityContextRepository securityContextRepository,
+                         ChatMessageService chatMessageService){
         this.profileRepository = profileRepository;
         this.memberRepository = memberRepository;
         this.securityContextRepository = securityContextRepository;
         this.securityContextHolderStrategy = securityContextHolderStrategy;
+        this.chatMessageService = chatMessageService;
     }
 
     @Transactional
@@ -63,6 +67,8 @@ public class MyPageService {
 
         member.putNickName(nickNameRequest.nickName());
         memberRepository.save(member);
+
+        chatMessageService.changeChatNickname(member.getEmail(), nickNameRequest.nickName());
     }
 
     @Transactional
