@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +39,6 @@ public class MemberService {
     private final HttpSessionSecurityContextRepository securityContextRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final MailService mailService;
-    private final RedissonClient redissonClient;
 
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
     private final long ACCESS_FIVE_MINUTES = 1000 * 60 * 5;
