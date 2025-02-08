@@ -11,6 +11,7 @@ public record PostRequest(
         @NotNull
         String thumbnail,
         @NotNull
-        String summary
+        String summary,
+        String storageId
 ) {
 }

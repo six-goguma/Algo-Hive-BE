@@ -12,6 +12,7 @@ public record PostResponse(
         int commentCount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String author
+        String author,
+        String storageId
 ) {
 }
