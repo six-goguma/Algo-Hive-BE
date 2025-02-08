@@ -88,27 +88,17 @@ public class MemberService {
         if (memberRepository.existsByNickname(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
+    @Async
     public void postCode(String email) throws MessagingException {
         checkEmail(email);
         Random random = new Random();
         String code = String.format("%04d", random.nextInt(10000));
 
         mailService.sendMail(email, code);
-        RLock lock = redissonClient.getLock("email:" + email);
-        try {
-            if (lock.tryLock(5, 3, TimeUnit.SECONDS)) {
-                redisTemplate.opsForHash().put(email, "code", code);
-                redisTemplate.opsForHash().put(email, "verified", false);
+        redisTemplate.opsForHash().put(email, "code", code);
+        redisTemplate.opsForHash().put(email, "verified", false);
 
-                redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
-            }
-        } catch (InterruptedException e) {
-            throw new BadRequestException(ErrorCode.LOCK_ERROR);
-        } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
-        }
+        redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
     }
 
     public void verifyCode(String email, String code) {

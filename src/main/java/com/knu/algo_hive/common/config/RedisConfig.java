@@ -46,14 +46,14 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean
-    public RedissonClient redissonClient() {
-        Config config = new Config();
-        config.useSingleServer()
-                .setAddress("redis://" + redisProperties.host() + ":" + redisProperties.port())
-                .setPassword(redisProperties.password())
-                .setConnectionMinimumIdleSize(2)
-                .setConnectionPoolSize(10);
-        return org.redisson.Redisson.create(config);
-    }
+//    @Bean
+//    public RedissonClient redissonClient() {
+//        Config config = new Config();
+//        config.useSingleServer()
+//                .setAddress("redis://" + redisProperties.host() + ":" + redisProperties.port())
+//                .setPassword(redisProperties.password())
+//                .setConnectionMinimumIdleSize(2)
+//                .setConnectionPoolSize(10);
+//        return org.redisson.Redisson.create(config);
+//    }
 }
