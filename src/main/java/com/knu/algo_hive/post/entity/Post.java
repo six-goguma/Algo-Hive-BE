@@ -33,12 +33,14 @@ public class Post {
     private Member member;
     @org.springframework.data.annotation.Version
     private Integer version;
+    private String storageId;
 
-    public Post(String content, String summary, String thumbnail, String title, Member member) {
+    public Post(String content, String summary, String thumbnail, String title, Member member,String storageId) {
         this.content = content;
         this.summary = summary;
         this.thumbnail = thumbnail;
         this.title = title;
         this.member = member;
+        this.storageId = storageId;
     }
 }

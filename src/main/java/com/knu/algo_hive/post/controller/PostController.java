@@ -6,6 +6,7 @@ import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.PostRequest;
 import com.knu.algo_hive.post.dto.PostResponse;
 import com.knu.algo_hive.post.dto.PostSummaryResponse;
+import com.knu.algo_hive.post.dto.PostUpdateRequest;
 import com.knu.algo_hive.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -71,7 +72,7 @@ public class PostController {
 
     @PostMapping("/api/v1/posts")
     @Operation(summary = "게시글 저장",
-            description = "게시글 저장"
+            description = "title, storageId 은 필수. 빈값은 불가합니다."
     )
     @ApiErrorCodeExamples({ErrorCode.MEMBER_NOT_FOUND})
     public ResponseEntity<Void> savePost(@RequestBody PostRequest request,
@@ -82,11 +83,11 @@ public class PostController {
 
     @PutMapping("/api/v1/posts/{postId}")
     @Operation(summary = "게시글 수정",
-            description = "게시글 수정"
+            description = "title 은 필수. 에 빈값은 불가합니다."
     )
     @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> updatePost(@PathVariable Long postId,
-                                           @RequestBody PostRequest request,
+                                           @RequestBody PostUpdateRequest request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.updatePost(postId, request, userDetails.getUsername());
         return ResponseEntity.ok().build();

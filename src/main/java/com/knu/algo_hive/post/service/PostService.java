@@ -8,6 +8,7 @@ import com.knu.algo_hive.common.exception.NotFoundException;
 import com.knu.algo_hive.post.dto.PostRequest;
 import com.knu.algo_hive.post.dto.PostResponse;
 import com.knu.algo_hive.post.dto.PostSummaryResponse;
+import com.knu.algo_hive.post.dto.PostUpdateRequest;
 import com.knu.algo_hive.post.entity.Post;
 import com.knu.algo_hive.post.repository.PostRepository;
 import org.springframework.data.domain.Page;
@@ -20,10 +21,11 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-
-    public PostService(PostRepository postRepository, MemberRepository memberRepository) {
+    private final ImageService imageService;
+    public PostService(PostRepository postRepository, MemberRepository memberRepository, ImageService imageService) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
+        this.imageService = imageService;
     }
 
     @Transactional(readOnly = true)
@@ -40,20 +42,19 @@ public class PostService {
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return new PostResponse(post.getId(), post.getTitle(), post.getContent(),
-                post.getThumbnail(), post.getSummary(), post.getLikeCount(), post.getCommentCount(),
-                post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickName());
+
+        return new PostResponse(post.getId(), post.getTitle(), post.getContent(), post.getThumbnail(), post.getSummary(), post.getLikeCount(), post.getCommentCount(), post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickName(),post.getStorageId());
     }
 
     @Transactional
     public void savePost(PostRequest request, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        postRepository.save(new Post(request.contents(), request.summary(), request.thumbnail(), request.title(), member));
+        postRepository.save(new Post(request.contents(), request.summary(), request.thumbnail(), request.title(), member, request.storageId()));
     }
 
     @Transactional
-    public void updatePost(Long postId, PostRequest request, String email) {
+    public void updatePost(Long postId, PostUpdateRequest request, String email) {
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
@@ -71,7 +72,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
-
+        imageService.deleteAllImagesInStorageId(email, post.getStorageId());
         postRepository.deleteById(postId);
     }
 
