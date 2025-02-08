@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,7 +25,17 @@ public class ImageService {
     @Value("${image.url}")
     private String imageUrl;
 
+    private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(
+            "image/jpeg",
+            "image/png"
+    );
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+
     public UrlResponse uploadImage(MultipartFile file, String storageId, String email) {
+        if (file.isEmpty()) throw new ConflictException(ErrorCode.IMAGE_NOT_UPLOADED);
+        if (file.getSize() > MAX_FILE_SIZE) throw new ConflictException(ErrorCode.FILE_SIZE_EXCEEDED);
+        if (!ALLOWED_MIME_TYPES.contains(file.getContentType())) throw new ConflictException(ErrorCode.INVALID_FILE_TYPE);
+
         String subDirectory = email + "/" + storageId;
 
         try {
