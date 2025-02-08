@@ -6,6 +6,7 @@ import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.PostRequest;
 import com.knu.algo_hive.post.dto.PostResponse;
 import com.knu.algo_hive.post.dto.PostSummaryResponse;
+import com.knu.algo_hive.post.dto.PostUpdateRequest;
 import com.knu.algo_hive.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -86,7 +87,7 @@ public class PostController {
     )
     @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
     public ResponseEntity<Void> updatePost(@PathVariable Long postId,
-                                           @RequestBody PostRequest request,
+                                           @RequestBody PostUpdateRequest request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.updatePost(postId, request, userDetails.getUsername());
         return ResponseEntity.ok().build();
