@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,17 +41,17 @@ public class MemberService {
     private final MailService mailService;
 
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
-    private final long ACCESS_TEN_MINUTES = 1000 * 60 * 10;
+    private final long ACCESS_FIVE_MINUTES = 1000 * 60 * 5;
 
     @Transactional
     public void register(RegisterRequest registerRequest) {
         checkEmail(registerRequest.email());
-        checkNickName(registerRequest.nickName());
+        checkNickName(registerRequest.nickname());
 
         if (!Boolean.parseBoolean((String) redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
             throw new BadRequestException(ErrorCode.NOT_VERIFY_EMAIL);
 
-        Member member = new Member(registerRequest.nickName(),
+        Member member = new Member(registerRequest.nickname(),
                 registerRequest.email(),
                 passwordEncoder.encode(registerRequest.password()));
 
@@ -80,17 +81,17 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public void checkNickName(String nickname) {
-        if (memberRepository.existsByNickName(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
+    public void checkNickName(String nickName) {
+        if (memberRepository.existsByNickName(nickName)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
+    @Async
     public void postCode(String email) throws MessagingException {
         checkEmail(email);
         Random random = new Random();
         String code = String.format("%04d", random.nextInt(10000));
 
         mailService.sendMail(email, code);
-
         redisTemplate.opsForHash().put(email, "code", code);
         redisTemplate.opsForHash().put(email, "verified", false);
 
@@ -103,7 +104,7 @@ public class MemberService {
 
         if (storedCode.equals(code)) {
             redisTemplate.opsForHash().put(email, "verified", true);
-            redisTemplate.expire(email, ACCESS_TEN_MINUTES, TimeUnit.MILLISECONDS);
+            redisTemplate.expire(email, ACCESS_FIVE_MINUTES, TimeUnit.MILLISECONDS);
             return;
         }
 

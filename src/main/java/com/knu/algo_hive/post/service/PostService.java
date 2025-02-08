@@ -42,6 +42,7 @@ public class PostService {
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+
         return new PostResponse(post.getId(), post.getTitle(), post.getContent(), post.getThumbnail(), post.getSummary(), post.getLikeCount(), post.getCommentCount(), post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickName(),post.getStorageId());
     }
 

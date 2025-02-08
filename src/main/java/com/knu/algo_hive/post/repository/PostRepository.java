@@ -21,8 +21,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT new com.knu.algo_hive.post.dto.PostSummaryResponse(p.id, p.title, p.thumbnail, p.summary, p.createdAt, p.likeCount, p.commentCount, m.nickName) " +
             "FROM Post p " +
             "JOIN p.member m " +
-            "WHERE m.nickName = :nickname")
-    Page<PostSummaryResponse> findPostSummariesByAuthorPaged(Pageable pageable, @Param("nickname") String nickname);
+            "WHERE m.nickName = :nickName")
+    Page<PostSummaryResponse> findPostSummariesByAuthorPaged(Pageable pageable, @Param("nickName") String nickname);
 
     @Query("SELECT p " +
             "FROM Post p " +
@@ -41,6 +41,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "FROM Post p " +
             "JOIN p.member m " +
             "JOIN PostTag pt ON pt.post = p " +
-            "WHERE pt.tagId = :tagId AND m.nickName = :nickname ")
-    Page<PostSummaryResponse> findPostSummariesBtTagIdAndNickname(@Param("tagId") int tagId, @Param("nickname") String nickname, Pageable pageable);
+            "WHERE pt.tagId = :tagId AND m.nickName = :nickName ")
+    Page<PostSummaryResponse> findPostSummariesBtTagIdAndNickname(@Param("tagId") int tagId, @Param("nickName") String nickname, Pageable pageable);
 }

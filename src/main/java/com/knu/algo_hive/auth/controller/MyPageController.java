@@ -36,13 +36,13 @@ public class MyPageController {
 
     @Operation(summary = "프로필 등록 / 변경 기능",
             description = "사용자의 프로필 이미지를 등록한다. 이미 프로필 이미지가 있을 경우 제거하고 교체한다.")
-    @ApiErrorCodeExamples({ErrorCode.IMAGE_DELETE_FAILED, ErrorCode.IMAGE_UPLOAD_FAILED, ErrorCode.UNAUTHORIZED})
+    @ApiErrorCodeExamples({ErrorCode.IMAGE_DELETE_FAILED, ErrorCode.IMAGE_UPLOAD_FAILED,
+            ErrorCode.UNAUTHORIZED, ErrorCode.FILE_SIZE_EXCEEDED,
+            ErrorCode.IMAGE_NOT_UPLOADED, ErrorCode.INVALID_FILE_TYPE})
     @PostMapping("/profile")
-    public ResponseEntity<?> postProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ResponseEntity<ProfileResponse> postProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                          @ModelAttribute ProfileRequest profileRequest){
-        myPageService.postProfile(userDetails.getMember(), profileRequest);
-
-        return ResponseEntity.ok(ErrorCode.OK.getMessage());
+        return ResponseEntity.ok(myPageService.postProfile(userDetails.getMember(), profileRequest));
     }
 
     @Operation(summary = "프로필 삭제 기능",
@@ -60,8 +60,8 @@ public class MyPageController {
     @ApiErrorCodeExamples({ErrorCode.DUPLICATE_NICK_NAME, ErrorCode.UNAUTHORIZED})
     @PutMapping("/nick-name")
     public ResponseEntity<?> putNickName(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                         @RequestBody NickNameRequest nickNameRequest){
-        myPageService.putNickName(userDetails.getMember(), nickNameRequest);
+                                         @RequestBody NickNameRequest nicknameRequest){
+        myPageService.putNickName(userDetails.getMember(), nicknameRequest);
 
         return ResponseEntity.ok(ErrorCode.OK.getMessage());
     }
@@ -78,10 +78,10 @@ public class MyPageController {
 
     @Operation(summary = "로그아웃 기능",
             description = "로그인한 사용자의 인증 권한을 제거한다.")
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         myPageService.logout(request, response);
-        return ResponseEntity.ok(ErrorCode.OK);
+        return ResponseEntity.ok(ErrorCode.OK.getMessage());
     }
 
 }
