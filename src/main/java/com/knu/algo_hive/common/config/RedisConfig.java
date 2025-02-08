@@ -1,9 +1,7 @@
 package com.knu.algo_hive.common.config;
 
 import com.knu.algo_hive.chat.dto.UsersResponse;
-import com.knu.algo_hive.common.properties.RedisProperties;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -13,11 +11,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@EnableConfigurationProperties(RedisProperties.class)
 @AllArgsConstructor
 public class RedisConfig {
-    private final RedisProperties redisProperties;
-
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -42,15 +37,4 @@ public class RedisConfig {
         template.afterPropertiesSet();
         return template;
     }
-
-//    @Bean
-//    public RedissonClient redissonClient() {
-//        Config config = new Config();
-//        config.useSingleServer()
-//                .setAddress("redis://" + redisProperties.host() + ":" + redisProperties.port())
-//                .setPassword(redisProperties.password())
-//                .setConnectionMinimumIdleSize(2)
-//                .setConnectionPoolSize(10);
-//        return org.redisson.Redisson.create(config);
-//    }
 }
