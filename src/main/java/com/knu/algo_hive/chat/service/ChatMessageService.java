@@ -47,4 +47,9 @@ public class ChatMessageService {
                 chatMessage.getRoom().getRoomName()
         ));
     }
+
+    @Transactional
+    public void changeChatNickname(String email, String nickname) {
+        chatMessageRepository.updateUsernameByUserEmail(email, nickname);
+    }
 }
