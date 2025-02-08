@@ -42,14 +42,14 @@ public class PostService {
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-        return new PostResponse(post.getId(), post.getTitle(), post.getContent(), post.getThumbnail(), post.getSummary(), post.getLikeCount(), post.getCommentCount(), post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickName());
+        return new PostResponse(post.getId(), post.getTitle(), post.getContent(), post.getThumbnail(), post.getSummary(), post.getLikeCount(), post.getCommentCount(), post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickName(),post.getStorageId());
     }
 
     @Transactional
     public void savePost(PostRequest request, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MEMBER_NOT_FOUND));
-        postRepository.save(new Post(request.contents(), request.summary(), request.thumbnail(), request.title(), member));
+        postRepository.save(new Post(request.contents(), request.summary(), request.thumbnail(), request.title(), member, request.storageId()));
     }
 
     @Transactional
