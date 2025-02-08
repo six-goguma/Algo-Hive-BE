@@ -45,9 +45,9 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostSummaries(pageable));
     }
 
-    @GetMapping("/api/v1/{nickname}/posts")
+    @GetMapping("/api/v1/{nickName}/posts")
     @Operation(summary = "특정 유저의 게시물 페이지네이션 조회",
-            description = "페이지네이션 적용. /api/v1/{nickname}/posts?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc} ✅ex)좋아요 개수 기준 내림차순 조회 /api/v1/{nickname}/posts?page=0&size=10&sort=likeCount,desc"
+            description = "페이지네이션 적용. /api/v1/{nickName}/posts?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc} ✅ex)좋아요 개수 기준 내림차순 조회 /api/v1/{nickName}/posts?page=0&size=10&sort=likeCount,desc"
     )
     @Parameters({
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "페이지 번호 (0부터 시작)", example = "0", schema = @Schema(type = "integer", defaultValue = "0")),
@@ -118,9 +118,9 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPostSummariesByTag(tagId, pageable));
     }
 
-    @GetMapping("/api/v1/{nickname}/posts/tags/{tagId}")
+    @GetMapping("/api/v1/{nickName}/posts/tags/{tagId}")
     @Operation(summary = "특정 유저의 태그별 게시물 페이지네이션 조회",
-            description = "페이지네이션 적용. /api/v1/{nickname}/posts/tags/{tagId}?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc}"
+            description = "페이지네이션 적용. /api/v1/{nickName}/posts/tags/{tagId}?page={page번호}&size={page content 개수}&sort={content 속성},{desc || asc}"
     )
     @Parameters({
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "페이지 번호 (0부터 시작)", example = "0", schema = @Schema(type = "integer", defaultValue = "0")),

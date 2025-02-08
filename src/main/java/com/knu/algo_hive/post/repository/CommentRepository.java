@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("SELECT new com.knu.algo_hive.post.dto.CommentResponse(c.id,c.content,c.createdAt,c.updatedAt,c.member.nickname ) " +
+    @Query("SELECT new com.knu.algo_hive.post.dto.CommentResponse(c.id,c.content,c.createdAt,c.updatedAt,c.member.nickName ) " +
             "FROM Comment c " +
             "WHERE c.post.id = :postId ")
     Page<CommentResponse> findCommentsByPostIdPaged(@Param("postId") Long postId, Pageable pageable);

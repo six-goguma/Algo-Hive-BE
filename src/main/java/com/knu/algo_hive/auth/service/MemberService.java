@@ -72,7 +72,7 @@ public class MemberService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Member member = userDetails.getMember();
 
-        return new LoginResponse(member.getNickname());
+        return new LoginResponse(member.getNickName());
     }
 
     @Transactional(readOnly = true)
@@ -81,8 +81,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public void checkNickName(String nickname) {
-        if (memberRepository.existsByNickname(nickname)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
+    public void checkNickName(String nickName) {
+        if (memberRepository.existsByNickName(nickName)) throw new ConflictException(ErrorCode.DUPLICATE_NICK_NAME);
     }
 
     @Async

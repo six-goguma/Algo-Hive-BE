@@ -42,7 +42,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
         return new PostResponse(post.getId(), post.getTitle(), post.getContent(),
                 post.getThumbnail(), post.getSummary(), post.getLikeCount(), post.getCommentCount(),
-                post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickname());
+                post.getCreatedAt(), post.getUpdatedAt(), post.getMember().getNickName());
     }
 
     @Transactional
