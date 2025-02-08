@@ -29,9 +29,9 @@ public class ChatMessageService {
         Room room = roomRepository.findByRoomName(roomName)
                 .orElseThrow(() -> new NotFoundException("해당 roomName은 존재하지 않습니다."));
 
-        chatMessageRepository.save(new ChatMessage(chatMessageRequest.sender(), chatMessageRequest.content(), room));
+        chatMessageRepository.save(new ChatMessage(chatMessageRequest.sender(), chatMessageRequest.email(), chatMessageRequest.content(), room));
 
-        return new ChatMessageInfo(chatMessageRequest.sender(), chatMessageRequest.content(), roomName);
+        return new ChatMessageInfo(chatMessageRequest.sender(), chatMessageRequest.email(), chatMessageRequest.content(), roomName);
     }
 
     @Transactional
@@ -42,8 +42,14 @@ public class ChatMessageService {
         Page<ChatMessage> chatMessages = chatMessageRepository.findByRoomOrderByChatTimeDesc(room, pageable);
         return chatMessages.map(chatMessage -> new ChatMessageInfo(
                 chatMessage.getUsername(),
+                chatMessage.getUserEmail(),
                 chatMessage.getContent(),
                 chatMessage.getRoom().getRoomName()
         ));
+    }
+
+    @Transactional
+    public void changeChatNickname(String email, String nickname) {
+        chatMessageRepository.updateUsernameByUserEmail(email, nickname);
     }
 }
