@@ -26,6 +26,7 @@ public class ChatMessage {
     @NotNull
     @CreatedDate
     private LocalDateTime chatTime;
+    private String userEmail;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -36,8 +37,9 @@ public class ChatMessage {
 
     }
 
-    public ChatMessage(String username, String content, Room room) {
+    public ChatMessage(String username, String userEmail, String content, Room room) {
         this.username = username;
+        this.userEmail = userEmail;
         this.content = content;
         this.room = room;
     }
