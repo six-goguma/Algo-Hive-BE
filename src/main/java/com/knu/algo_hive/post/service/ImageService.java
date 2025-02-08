@@ -1,5 +1,6 @@
 package com.knu.algo_hive.post.service;
 
+import com.knu.algo_hive.common.exception.BadRequestException;
 import com.knu.algo_hive.common.exception.ConflictException;
 import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.UrlResponse;
@@ -9,6 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,27 +22,68 @@ public class ImageService {
 
     @Value("${file.path}")
     private String uploadFolder;
-    @Value("${post.image.url}")
+    @Value("${image.url}")
     private String imageUrl;
 
-    public UrlResponse uploadImage(MultipartFile file) {
-        UUID uuid = UUID.randomUUID();
-        String thumbnailImageName = uuid + "_" + file.getOriginalFilename();
-        File destinationFile = new File(uploadFolder + thumbnailImageName);
+    private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(
+            "image/jpeg",
+            "image/png"
+    );
+    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+    public UrlResponse uploadImage(MultipartFile file, String storageId, String email) {
+        if (file.isEmpty()) throw new ConflictException(ErrorCode.IMAGE_NOT_UPLOADED);
+        if (file.getSize() > MAX_FILE_SIZE) throw new ConflictException(ErrorCode.FILE_SIZE_EXCEEDED);
+        if (!ALLOWED_MIME_TYPES.contains(file.getContentType())) throw new ConflictException(ErrorCode.INVALID_FILE_TYPE);
+
+        String subDirectory = email + "/" + storageId;
+
+        try {
+            Path directoryPath = Paths.get(uploadFolder + subDirectory);
+            if (!Files.exists(directoryPath)) {
+                Files.createDirectories(directoryPath);
+            }
+        } catch (IOException e) {
+            throw new ConflictException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        File destinationFile = new File(uploadFolder + subDirectory + "/" + fileName);
+
         try {
             file.transferTo(destinationFile);
-            return new UrlResponse(imageUrl + thumbnailImageName);
+            return new UrlResponse(imageUrl + subDirectory + "/" + fileName);
         } catch (IOException e) {
-
             throw new ConflictException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
 
-    public void deleteImage(String url) {
-        int lastIndex = url.lastIndexOf("/");
-        String fileName = url.substring(lastIndex + 1);
-        File deletedFile = new File(uploadFolder+fileName);
+    public void deleteImage(String url, String email) {
+        // url example: /backend/profile/images/test3@email.com/1234/Frame.png
+        String[] parts = url.split("/");
+        if (parts.length != 7) throw new BadRequestException(ErrorCode.INVALID_PATH_FORMAT);
+        String storageId = parts[5];
+        String filename = parts[6];
 
-        deletedFile.deleteOnExit();
+        File targetFile = new File(uploadFolder + email + "/" + storageId + "/" + filename);
+        if (!targetFile.delete()) throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
+    }
+
+    public void deleteAllImagesInStorageId(String email, String storageId) {
+        Path directoryPath = Paths.get(uploadFolder + email + "/" + storageId);
+
+        if (!Files.exists(directoryPath)) {
+            return;
+        }
+
+        File directory = directoryPath.toFile();
+        File[] images = directory.listFiles();
+        if (images != null) {
+            for (File image : images) {
+                if (!image.delete()) {
+                    throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
+                }
+            }
+        }
+        if (!directory.delete()) throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
     }
 }
