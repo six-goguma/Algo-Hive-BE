@@ -12,6 +12,7 @@ public record PostRequest(
         String thumbnail,
         @NotNull
         String summary,
+        @NotBlank
         String storageId
 ) {
 }
