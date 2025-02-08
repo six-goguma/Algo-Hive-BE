@@ -20,10 +20,11 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-
-    public PostService(PostRepository postRepository, MemberRepository memberRepository) {
+    private final ImageService imageService;
+    public PostService(PostRepository postRepository, MemberRepository memberRepository, ImageService imageService) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
+        this.imageService = imageService;
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +70,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
-
+        imageService.deleteAllImagesInStorageId(email, post.getStorageId());
         postRepository.deleteById(postId);
     }
 
