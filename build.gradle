@@ -42,6 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.27.0'
     implementation 'io.projectreactor.netty:reactor-netty-core:1.2.2'
     implementation 'io.projectreactor.netty:reactor-netty-http:1.2.2'
 }
