@@ -54,7 +54,7 @@ public class PostController {
     })
     public ResponseEntity<Page<PostSummaryResponse>> getPostSummariesByNickname(@PageableDefault(sort = "createdAt,desc")
                                                                                 Pageable pageable,
-                                                                                @PathVariable String nickname) {
+                                                                                @PathVariable("nickname") String nickname) {
         return ResponseEntity.ok(postService.getPostSummariesByNickname(pageable, nickname));
     }
 
@@ -82,7 +82,7 @@ public class PostController {
             description = "title 은 필수. 에 빈값은 불가합니다."
     )
     @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId,
+    public ResponseEntity<Void> updatePost(@PathVariable("postId") Long postId,
                                            @RequestBody PostUpdateRequest request,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.updatePost(postId, request, userDetails.getUsername());
@@ -94,7 +94,7 @@ public class PostController {
             description = "게시글 삭제"
     )
     @ApiErrorCodeExamples({ErrorCode.POST_NOT_FOUND, ErrorCode.NOT_YOUR_RESOURCE})
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId,
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") Long postId,
                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.deletePost(postId, userDetails.getUsername());
         return ResponseEntity.ok().build();
@@ -110,7 +110,7 @@ public class PostController {
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
     public ResponseEntity<Page<PostSummaryResponse>> getAllPostSummariesByTagId(@PageableDefault(sort = "createdAt,desc")
-                                                                                @PathVariable int tagId,
+                                                                                @PathVariable("tagId") int tagId,
                                                                                 Pageable pageable) {
         return ResponseEntity.ok(postService.getAllPostSummariesByTag(tagId, pageable));
     }
@@ -125,8 +125,8 @@ public class PostController {
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 기준 (속성,오름차순|내림차순)", example = "createdAt,desc", schema = @Schema(type = "string"))
     })
     public ResponseEntity<Page<PostSummaryResponse>> getPostSummariesByTagIdAndNickname(@PageableDefault(sort = "createdAt,desc")
-                                                                                        @PathVariable int tagId,
-                                                                                        @PathVariable String nickname,
+                                                                                        @PathVariable("tagId") int tagId,
+                                                                                        @PathVariable("nickname") String nickname,
                                                                                         Pageable pageable
     ) {
         return ResponseEntity.ok(postService.getPostSummariesByTagIdAndNickname(tagId, nickname, pageable));
