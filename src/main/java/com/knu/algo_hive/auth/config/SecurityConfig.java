@@ -1,5 +1,6 @@
 package com.knu.algo_hive.auth.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,9 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Value("${image.url}")
+    String imageUrl;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         httpSecurity
@@ -30,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers(imageUrl + "**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .anyRequest().authenticated())
 //                          .anyRequest().permitAll())
