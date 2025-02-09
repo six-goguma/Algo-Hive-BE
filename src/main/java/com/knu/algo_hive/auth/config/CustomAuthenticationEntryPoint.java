@@ -20,13 +20,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-//        String acceptHeader = request.getHeader("Accept");
-//        boolean isAjax = acceptHeader != null && acceptHeader.contains("application/json");
-//
-//        if (!isAjax) {
-//            response.sendRedirect("/");
-//            return;
-//        }
+        String acceptHeader = request.getHeader("Accept");
+        boolean isAjax = acceptHeader != null && acceptHeader.contains("application/json");
+
+        if (!isAjax) {
+            response.sendRedirect("/");
+            return;
+        }
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
