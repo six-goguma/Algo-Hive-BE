@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,6 +41,7 @@ public class MemberService {
     private final HttpSessionSecurityContextRepository securityContextRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final MailService mailService;
+    private final RedissonClient redissonClient;
 
     private final long ACCESS_THREE_MINUTES = 1000 * 60 * 3;
     private final long ACCESS_FIVE_MINUTES = 1000 * 60 * 5;
@@ -92,10 +95,20 @@ public class MemberService {
         String code = String.format("%04d", random.nextInt(10000));
 
         mailService.sendMail(email, code);
-        redisTemplate.opsForHash().put(email, "code", code);
-        redisTemplate.opsForHash().put(email, "verified", false);
-
-        redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
+        RLock lock = redissonClient.getLock("email:" + email);
+        try {
+            if (lock.tryLock(5, 3, TimeUnit.SECONDS)) {
+                redisTemplate.opsForHash().put(email, "code", code);
+                redisTemplate.opsForHash().put(email, "verified", false);
+                redisTemplate.expire(email, ACCESS_THREE_MINUTES, TimeUnit.MILLISECONDS);
+            }
+        } catch (InterruptedException e) {
+            throw new BadRequestException(ErrorCode.LOCK_ERROR);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     public void verifyCode(String email, String code) {
