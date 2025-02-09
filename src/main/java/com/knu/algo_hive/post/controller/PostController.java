@@ -3,10 +3,7 @@ package com.knu.algo_hive.post.controller;
 import com.knu.algo_hive.auth.service.CustomUserDetails;
 import com.knu.algo_hive.common.annotation.ApiErrorCodeExamples;
 import com.knu.algo_hive.common.exception.ErrorCode;
-import com.knu.algo_hive.post.dto.PostRequest;
-import com.knu.algo_hive.post.dto.PostResponse;
-import com.knu.algo_hive.post.dto.PostSummaryResponse;
-import com.knu.algo_hive.post.dto.PostUpdateRequest;
+import com.knu.algo_hive.post.dto.*;
 import com.knu.algo_hive.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -75,10 +72,9 @@ public class PostController {
             description = "title, storageId 은 필수. 빈값은 불가합니다."
     )
     @ApiErrorCodeExamples({ErrorCode.MEMBER_NOT_FOUND})
-    public ResponseEntity<Void> savePost(@RequestBody PostRequest request,
-                                         @AuthenticationPrincipal CustomUserDetails userDetails) {
-        postService.savePost(request, userDetails.getUsername());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PostIdResponse> savePost(@RequestBody PostRequest request,
+                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(postService.savePost(request, userDetails.getUsername()));
     }
 
     @PutMapping("/api/v1/posts/{postId}")
