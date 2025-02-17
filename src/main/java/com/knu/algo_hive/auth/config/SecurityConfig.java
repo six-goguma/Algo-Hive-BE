@@ -82,6 +82,7 @@ public class SecurityConfig {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setSameSite("None");
         serializer.setUseSecureCookie(true);
+        serializer.setDomainName("algo.knu-soft.site");
         return serializer;
     }
 }
