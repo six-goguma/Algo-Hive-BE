@@ -80,7 +80,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
-//        imageService.deleteAllImagesInStorageId(email, post.getStorageId());
+        imageService.deleteAllImagesInStorageId(email, post.getStorageId());
         commentRepository.deleteByPost(post);
         likeRepository.deleteByPost(post);
         postTagRepository.deleteAllByPost(post);
