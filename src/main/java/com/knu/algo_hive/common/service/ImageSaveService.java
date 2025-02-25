@@ -31,4 +31,9 @@ public class ImageSaveService {
             throw new ConflictException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
+
+    public void deleteImage(String filename) {
+        File targetFile = new File(uploadFolder + "/" + filename);
+        if (!targetFile.delete()) throw new ConflictException(ErrorCode.IMAGE_DELETE_FAILED);
+    }
 }
