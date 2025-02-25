@@ -17,6 +17,8 @@ public class ImageSaveService {
     private String uploadFolder;
     @Value("${image.url}")
     private String imageUrl;
+    @Value("{server.url}")
+    private String serverUrl;
 
     public ImageUrlResponse uploadImage(MultipartFile file) {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -24,7 +26,7 @@ public class ImageSaveService {
 
         try {
             file.transferTo(destinationFile);
-            return new ImageUrlResponse(imageUrl + "/" + fileName);
+            return new ImageUrlResponse(serverUrl + imageUrl + fileName);
         } catch (IOException e) {
             throw new ConflictException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
