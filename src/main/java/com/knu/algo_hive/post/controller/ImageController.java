@@ -2,9 +2,11 @@ package com.knu.algo_hive.post.controller;
 
 import com.knu.algo_hive.auth.service.CustomUserDetails;
 import com.knu.algo_hive.common.annotation.ApiErrorCodeExamples;
+import com.knu.algo_hive.common.dto.StringTypeResponse;
 import com.knu.algo_hive.common.exception.ErrorCode;
 import com.knu.algo_hive.post.dto.ImageDeleteRequest;
 import com.knu.algo_hive.post.dto.ImageUploadRequest;
+import com.knu.algo_hive.post.dto.UUIDResponse;
 import com.knu.algo_hive.post.dto.UrlResponse;
 import com.knu.algo_hive.post.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,10 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @Tag(name = "이미지 관리", description = "이미지 관련 API")
@@ -42,5 +43,12 @@ public class ImageController {
                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
         imageService.deleteImage(request.url(), userDetails.getUsername());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/api/v1/make/uuid")
+    @Operation(summary = "storage id로 사용할 랜덤 uuid 생성 API", description = "생성 후 반환한다")
+    public ResponseEntity<UUIDResponse> makeStorageId() {
+        String randomUUID = UUID.randomUUID().toString();
+        return ResponseEntity.ok(new UUIDResponse(randomUUID));
     }
 }

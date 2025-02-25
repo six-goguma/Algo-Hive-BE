@@ -2,6 +2,7 @@ package com.knu.algo_hive.post.repository;
 
 import com.knu.algo_hive.post.dto.CommentResponse;
 import com.knu.algo_hive.post.entity.Comment;
+import com.knu.algo_hive.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "JOIN FETCH c.member " +
             "WHERE c.id = :commentId ")
     Optional<Comment> findByIdWithMember(@Param("commentId") Long commentId);
+    void deleteByPost(Post post);
 }

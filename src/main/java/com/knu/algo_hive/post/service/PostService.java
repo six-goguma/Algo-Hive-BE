@@ -7,7 +7,10 @@ import com.knu.algo_hive.common.exception.ForbiddenException;
 import com.knu.algo_hive.common.exception.NotFoundException;
 import com.knu.algo_hive.post.dto.*;
 import com.knu.algo_hive.post.entity.Post;
+import com.knu.algo_hive.post.repository.CommentRepository;
+import com.knu.algo_hive.post.repository.LikeRepository;
 import com.knu.algo_hive.post.repository.PostRepository;
+import com.knu.algo_hive.post.repository.PostTagRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,12 +21,18 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final PostTagRepository postTagRepository;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final ImageService imageService;
 
-    public PostService(PostRepository postRepository, MemberRepository memberRepository, ImageService imageService) {
+    public PostService(PostRepository postRepository, MemberRepository memberRepository, ImageService imageService, PostTagRepository postTagRepository, LikeRepository likeRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
         this.imageService = imageService;
+        this.postTagRepository = postTagRepository;
+        this.likeRepository = likeRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +80,10 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         if (!post.getMember().getEmail().equals(email)) throw new ForbiddenException(ErrorCode.NOT_YOUR_RESOURCE);
-        imageService.deleteAllImagesInStorageId(email, post.getStorageId());
+//        imageService.deleteAllImagesInStorageId(email, post.getStorageId());
+        commentRepository.deleteByPost(post);
+        likeRepository.deleteByPost(post);
+        postTagRepository.deleteAllByPost(post);
         postRepository.deleteById(postId);
     }
 
