@@ -17,7 +17,7 @@ public class ImageSaveService {
     private String uploadFolder;
     @Value("${image.url}")
     private String imageUrl;
-    @Value("{server.url}")
+    @Value("${server.url}")
     private String serverUrl;
 
     public ImageUrlResponse uploadImage(MultipartFile file) {
