@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class MyPageController {
     @ApiErrorCodeExamples({ErrorCode.IMAGE_DELETE_FAILED, ErrorCode.IMAGE_UPLOAD_FAILED,
             ErrorCode.UNAUTHORIZED, ErrorCode.FILE_SIZE_EXCEEDED,
             ErrorCode.IMAGE_NOT_UPLOADED, ErrorCode.INVALID_FILE_TYPE})
-    @PostMapping("/profile")
+    @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProfileResponse> postProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                          @ModelAttribute ProfileRequest profileRequest){
         return ResponseEntity.ok(myPageService.postProfile(userDetails.getMember(), profileRequest));
