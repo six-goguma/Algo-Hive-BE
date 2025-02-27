@@ -49,12 +49,12 @@ public class MemberService {
     @Transactional
     public void register(RegisterRequest registerRequest) {
         checkEmail(registerRequest.email());
-        checkNickName(registerRequest.nickname());
+        checkNickName(registerRequest.nickName());
 
         if (!Boolean.parseBoolean((String) redisTemplate.opsForHash().get(registerRequest.email(), "verified")))
             throw new BadRequestException(ErrorCode.NOT_VERIFY_EMAIL);
 
-        Member member = new Member(registerRequest.nickname(),
+        Member member = new Member(registerRequest.nickName(),
                 registerRequest.email(),
                 passwordEncoder.encode(registerRequest.password()));
 
