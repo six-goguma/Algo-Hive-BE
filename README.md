@@ -1,4 +1,4 @@
-﻿# Algo-Hive-BE
+<img width="1332" alt="알고하이브_배경흰색" src="https://github.com/user-attachments/assets/8ba76484-b1ee-46bc-baa3-2617c8a9662c" />
 
 ## 💻 Web Server Architecture
 ![image](https://github.com/user-attachments/assets/12fee882-f7c2-4435-ad30-1c2de4efcc57)
