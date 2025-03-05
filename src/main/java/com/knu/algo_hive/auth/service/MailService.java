@@ -60,7 +60,7 @@ public class MailService {
         // 로고 이미지
         sb.append("<tr>");
         sb.append("<td align=\"center\" style=\"padding: 20px;\">");
-        sb.append("<img src=\"https://velog.velcdn.com/images/2iedo/post/b8d1a533-9531-429e-81e8-9b4733c78996/image.png\" width=\"250\" style=\"display: block;\">");
+        sb.append("<img src=\"https://algo.knu-soft.site/files/47f478c6-8a0d-48fe-87e2-2a770847cfcb_image.png\" width=\"250\" style=\"display: block;\">");
         sb.append("</td>");
         sb.append("</tr>");
 
