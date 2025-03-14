@@ -36,7 +36,7 @@
 - AI 코드리뷰: 코딩 테스트 문제를 풀고 붙여 넣으면 ai로부터 코드리뷰를 받을 수 있다.
 
 ## 💻 Web Server Architecture
-![image](https://github.com/user-attachments/assets/247af1b1-0681-4b0a-990f-fe5f1555a133)
+![image](https://github.com/user-attachments/assets/bd27aa4d-a832-4476-a79d-eadd0329bde2)
 
 ## ⚒️ TechSpec
 #### Frontend
