@@ -1,10 +1,11 @@
 name: 🚀 Build and Push Docker Image 🐳
 
 on:
-  push:
-    branches:
-      - main
-
+#  push:
+#    branches:
+#      - main
+  workflow_dispatch:
+  # 서버 종료로 인해 깃액션 수동 실행으로 변경
 jobs:
   build:
     runs-on: ubuntu-latest
