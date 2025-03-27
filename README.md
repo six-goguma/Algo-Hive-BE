@@ -35,6 +35,37 @@
 - 채팅: 채팅방을 생성할 수 있고, 다른 사용자와 채팅을 실시간으로 이용할 수 있다.
 - AI 코드리뷰: 코딩 테스트 문제를 풀고 붙여 넣으면 ai로부터 코드리뷰를 받을 수 있다.
 
+### 1. 메인 화면
+<img width="964" alt="image" src="https://github.com/user-attachments/assets/dec5872c-927e-40c8-9733-7f74c19ddd78" />
+
+### 2. 게시판 글 작성 화면
+> MarkDown 실시간 적용
+
+<img width="1001" alt="image" src="https://github.com/user-attachments/assets/8a5be922-cc31-43ef-a0fa-1fc6ef964545" />
+
+### 3. 게시판 글 내부 사진 삽입
+> 서버 내부 저장
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/f39e21ed-fa57-4de1-b1dc-0ca3a527284f" />
+
+### 4. AI 코드 리뷰
+> 각종 언어 지원
+
+<img width="967" alt="image" src="https://github.com/user-attachments/assets/7b4a8b33-487d-4f42-bbb0-d72f75eaec32" />
+<img width="980" alt="image" src="https://github.com/user-attachments/assets/40c87a65-4473-4770-abe6-b30a355f0e8e" />
+
+### 5. AI 코드 리뷰 결과 게시글
+> 자동 업로드 가능
+
+<img width="1162" alt="image" src="https://github.com/user-attachments/assets/333dc89b-e39d-42dd-aa9c-f74107594596" />
+
+### 6. 채팅 기능
+> 실시간 채팅방별 접속자, 접속자별 채팅방 위치 확인 가능
+
+<img width="1017" alt="image" src="https://github.com/user-attachments/assets/6ef2e5d8-cab9-4450-94e3-2af20991b755" />
+
+
+
 ## 💻 Web Server Architecture
 ![image](https://github.com/user-attachments/assets/bd27aa4d-a832-4476-a79d-eadd0329bde2)
 
