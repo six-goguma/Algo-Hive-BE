@@ -64,7 +64,7 @@
 
 
 
-## 💻 Web Server Architecture
+## 💻 Web Application Server Architecture
 ![image](https://github.com/user-attachments/assets/bd27aa4d-a832-4476-a79d-eadd0329bde2)
 
 ## ⚒️ TechSpec
